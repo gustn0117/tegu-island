@@ -61,6 +61,7 @@ export interface Product {
   badge_en: string | null;
   is_new: boolean;
   category: string | null;
+  image_url: string | null;
   product_type: 'featured' | 'new' | 'supply';
   sort_order: number;
   is_active: boolean;

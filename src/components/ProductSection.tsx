@@ -23,9 +23,14 @@ function ProductCard({ product }: { product: Product }) {
     <div className="en-tooltip group relative rounded-2xl overflow-hidden card-hover cursor-pointer"
       data-en={product.name_en}>
       <div className="aspect-[4/3] relative overflow-hidden rounded-t-2xl bg-gray-50">
-        <div className="absolute inset-0 flex items-center justify-center text-gray-300 group-hover:text-gray-400 group-hover:scale-110 transition-all duration-500">
-          {categoryIcons[product.category || ''] || <Package size={36} />}
-        </div>
+        {product.image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-gray-300 group-hover:text-gray-400 group-hover:scale-110 transition-all duration-500">
+            {categoryIcons[product.category || ''] || <Package size={36} />}
+          </div>
+        )}
         {(product.badge || product.is_new) && (
           <span className={`absolute top-3 right-3 text-[11px] px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium shadow-sm ${
             product.badge === '베스트' ? 'bg-brand text-white' :
