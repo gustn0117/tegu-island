@@ -1,10 +1,52 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import KakaoButton from '@/components/KakaoButton';
-import { CheckCircle, MessageCircle } from 'lucide-react';
+import { CheckCircle, MessageCircle, ChevronDown, Check } from 'lucide-react';
+
+interface SelectOption { value: string; label: string }
+
+function CustomSelect({ options, value, onChange, placeholder = '선택해주세요', required }: {
+  options: SelectOption[]; value: string; onChange: (v: string) => void; placeholder?: string; required?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const selected = options.find(o => o.value === value);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button type="button" onClick={() => setOpen(!open)}
+        className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white text-sm transition-all duration-300 border
+          ${open ? 'border-brand/40 ring-2 ring-brand/10' : 'border-gray-200 hover:border-gray-300'}
+          ${selected ? 'text-gray-800' : 'text-gray-400'}`}>
+        <span>{selected ? selected.label : placeholder}</span>
+        <ChevronDown size={16} className={`text-gray-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {required && !value && <input tabIndex={-1} className="opacity-0 absolute bottom-0 left-1/2 w-px h-px" required value="" onChange={() => {}} />}
+      {open && (
+        <div className="absolute z-50 mt-2 w-full bg-white rounded-2xl border border-gray-200 shadow-lg shadow-black/5 py-2 max-h-60 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
+          {options.map(opt => (
+            <button key={opt.value} type="button"
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              className={`w-full flex items-center justify-between px-5 py-3 text-sm transition-colors duration-150
+                ${opt.value === value ? 'text-brand font-medium bg-brand/5' : 'text-gray-600 hover:bg-gray-50'}`}>
+              <span>{opt.label}</span>
+              {opt.value === value && <Check size={15} className="text-brand" />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', species: '', experience: '', environment: '', message: '' });
@@ -13,6 +55,21 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); setSubmitted(true); };
 
   const inputClass = "w-full px-5 py-4 rounded-2xl bg-white text-sm text-gray-800/80 placeholder-gray-400/35 focus:outline-none transition-all duration-300 border border-gray-200 focus:border-brand/40 focus:ring-2 focus:ring-brand/10";
+
+  const speciesOptions: SelectOption[] = [
+    { value: 'bw', label: '아르헨티나 블랙&화이트 테구' },
+    { value: 'red', label: '아르헨티나 레드 테구' },
+    { value: 'blue', label: '블루 테구' },
+    { value: 'golden', label: '골든 테구' },
+    { value: 'other', label: '기타 / 상담 희망' },
+  ];
+
+  const experienceOptions: SelectOption[] = [
+    { value: 'none', label: '없음 (처음)' },
+    { value: 'beginner', label: '1년 미만' },
+    { value: 'intermediate', label: '1~3년' },
+    { value: 'advanced', label: '3년 이상' },
+  ];
 
   return (
     <>
@@ -63,26 +120,13 @@ export default function ContactPage() {
               </div>
               <div>
                 <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">관심 종 *</label>
-                <select required value={form.species} onChange={(e) => setForm({...form, species: e.target.value})}
-                  className={inputClass}>
-                  <option value="">선택해주세요</option>
-                  <option value="bw">아르헨티나 블랙&화이트 테구</option>
-                  <option value="red">아르헨티나 레드 테구</option>
-                  <option value="blue">블루 테구</option>
-                  <option value="golden">골든 테구</option>
-                  <option value="other">기타 / 상담 희망</option>
-                </select>
+                <CustomSelect required options={speciesOptions} value={form.species}
+                  onChange={(v) => setForm({...form, species: v})} placeholder="선택해주세요" />
               </div>
               <div>
                 <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">파충류 사육 경험</label>
-                <select value={form.experience} onChange={(e) => setForm({...form, experience: e.target.value})}
-                  className={inputClass}>
-                  <option value="">선택</option>
-                  <option value="none">없음 (처음)</option>
-                  <option value="beginner">1년 미만</option>
-                  <option value="intermediate">1-3년</option>
-                  <option value="advanced">3년 이상</option>
-                </select>
+                <CustomSelect options={experienceOptions} value={form.experience}
+                  onChange={(v) => setForm({...form, experience: v})} placeholder="선택해주세요" />
               </div>
               <div>
                 <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">현재 사육 환경 (생태형 인클로저 사이즈 등)</label>
