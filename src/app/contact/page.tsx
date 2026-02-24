@@ -1,52 +1,11 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import KakaoButton from '@/components/KakaoButton';
-import { CheckCircle, MessageCircle, ChevronDown, Check } from 'lucide-react';
-
-interface SelectOption { value: string; label: string }
-
-function CustomSelect({ options, value, onChange, placeholder = '선택해주세요', required }: {
-  options: SelectOption[]; value: string; onChange: (v: string) => void; placeholder?: string; required?: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const selected = options.find(o => o.value === value);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  return (
-    <div ref={ref} className="relative">
-      <button type="button" onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white text-sm transition-all duration-300 border
-          ${open ? 'border-brand/40 ring-2 ring-brand/10' : 'border-gray-200 hover:border-gray-300'}
-          ${selected ? 'text-gray-800' : 'text-gray-400'}`}>
-        <span>{selected ? selected.label : placeholder}</span>
-        <ChevronDown size={16} className={`text-gray-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {required && !value && <input tabIndex={-1} className="opacity-0 absolute bottom-0 left-1/2 w-px h-px" required value="" onChange={() => {}} />}
-      {open && (
-        <div className="absolute z-50 mt-2 w-full bg-white rounded-2xl border border-gray-200 shadow-lg shadow-black/5 py-2 max-h-60 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200">
-          {options.map(opt => (
-            <button key={opt.value} type="button"
-              onClick={() => { onChange(opt.value); setOpen(false); }}
-              className={`w-full flex items-center justify-between px-5 py-3 text-sm transition-colors duration-150
-                ${opt.value === value ? 'text-brand font-medium bg-brand/5' : 'text-gray-600 hover:bg-gray-50'}`}>
-              <span>{opt.label}</span>
-              {opt.value === value && <Check size={15} className="text-brand" />}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
+import CustomSelect, { type SelectOption } from '@/components/CustomSelect';
+import { CheckCircle, MessageCircle } from 'lucide-react';
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', species: '', experience: '', environment: '', message: '' });

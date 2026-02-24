@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import KakaoButton from '@/components/KakaoButton';
+import CustomSelect from '@/components/CustomSelect';
 import { Calendar, Clock, Users, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function BookingPage() {
@@ -18,8 +19,18 @@ export default function BookingPage() {
     setSubmitted(true);
   };
 
-  const timeSlots = ['10:00', '11:00', '13:00', '14:00', '15:00', '16:00'];
-  const visitTypes = ['생태 전시 관람 (개인)', '생태 전시 관람 (가족 2-4인)', '교육 프로그램 (단체 5인 이상)', '학교/기관 교육 방문', '바이어 상담'];
+  const timeOptions = [
+    { value: '10:00', label: '10:00' }, { value: '11:00', label: '11:00' },
+    { value: '13:00', label: '13:00' }, { value: '14:00', label: '14:00' },
+    { value: '15:00', label: '15:00' }, { value: '16:00', label: '16:00' },
+  ];
+  const visitTypeOptions = [
+    { value: '생태 전시 관람 (개인)', label: '생태 전시 관람 (개인)' },
+    { value: '생태 전시 관람 (가족 2-4인)', label: '생태 전시 관람 (가족 2-4인)' },
+    { value: '교육 프로그램 (단체 5인 이상)', label: '교육 프로그램 (단체 5인 이상)' },
+    { value: '학교/기관 교육 방문', label: '학교/기관 교육 방문' },
+    { value: '바이어 상담', label: '바이어 상담' },
+  ];
 
   const inputClass = "w-full px-5 py-4 rounded-2xl bg-white text-sm text-gray-700 placeholder-gray-300 border border-gray-200 focus:border-brand/40 focus:ring-2 focus:ring-brand/10 focus:outline-none transition-all duration-300";
 
@@ -111,23 +122,16 @@ export default function BookingPage() {
                 </div>
                 <div>
                   <label className="text-[13px] text-gray-500 mb-2 block font-medium">시간 *</label>
-                  <select required value={form.time}
-                    onChange={(e) => setForm({ ...form, time: e.target.value })}
-                    className={inputClass}>
-                    <option value="">선택</option>
-                    {timeSlots.map((t) => <option key={t} value={t}>{t}</option>)}
-                  </select>
+                  <CustomSelect required options={timeOptions} value={form.time}
+                    onChange={(v) => setForm({ ...form, time: v })} placeholder="선택해주세요" />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
                   <label className="text-[13px] text-gray-500 mb-2 block font-medium">관람/체험 유형 *</label>
-                  <select required value={form.type}
-                    onChange={(e) => setForm({ ...form, type: e.target.value })}
-                    className={inputClass}>
-                    {visitTypes.map((t) => <option key={t} value={t}>{t}</option>)}
-                  </select>
+                  <CustomSelect required options={visitTypeOptions} value={form.type}
+                    onChange={(v) => setForm({ ...form, type: v })} placeholder="선택해주세요" />
                 </div>
                 <div>
                   <label className="text-[13px] text-gray-500 mb-2 block font-medium">인원 *</label>

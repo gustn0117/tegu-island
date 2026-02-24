@@ -7,6 +7,7 @@ import {
   Upload, ImageIcon, XCircle, LayoutDashboard, ChevronRight, Search,
   Check, AlertTriangle, Eye, EyeOff, Copy, ArrowUpDown,
 } from 'lucide-react';
+import CustomSelect from '@/components/CustomSelect';
 
 /* ───── Table definitions ───── */
 const TABLES = [
@@ -551,10 +552,11 @@ export default function AdminPage() {
                       placeholder={field.placeholder}
                       className="w-full px-4 py-3 rounded-xl text-[13px] focus:outline-none transition-all border border-gray-200 focus:border-brand/40 bg-gray-50/50 focus:bg-white" />
                   ) : field.type === 'select' ? (
-                    <select value={String(editItem[field.key] ?? '')} onChange={(e) => setEditItem({ ...editItem, [field.key]: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl text-[13px] focus:outline-none transition-all border border-gray-200 focus:border-brand/40 bg-gray-50/50 focus:bg-white appearance-none">
-                      {PRODUCT_TYPES.map((pt) => (<option key={pt.value} value={pt.value}>{pt.label}</option>))}
-                    </select>
+                    <CustomSelect
+                      options={PRODUCT_TYPES}
+                      value={String(editItem[field.key] ?? '')}
+                      onChange={(v) => setEditItem({ ...editItem, [field.key]: v })}
+                      placeholder="상품 유형 선택" />
                   ) : field.type === 'image' ? (
                     <div className="space-y-3">
                       {editItem[field.key] ? (
