@@ -66,7 +66,7 @@ export default function Header() {
                       target="_blank"
                       rel="noopener noreferrer"
                       title={social.name}
-                      className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-white hover:bg-gray-400 transition-colors duration-300"
+                      className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-white hover:bg-gray-400 transition-colors duration-300 [&_svg]:w-3.5 [&_svg]:h-3.5"
                     >
                       {social.icon}
                     </a>
