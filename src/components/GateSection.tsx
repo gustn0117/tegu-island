@@ -15,7 +15,7 @@ const gates = [
     accent: 'from-gray-50 to-gray-100/50',
     iconBg: 'bg-gray-900/[0.06] text-gray-700',
     hoverBorder: 'hover:border-gray-200',
-    image: 'https://images.unsplash.com/photo-1504450874802-0ba2bcd659e3?w=800&q=80',
+    patternBg: '#222222',
   },
   {
     icon: <Heart size={30} />,
@@ -27,7 +27,7 @@ const gates = [
     accent: 'from-rose-50/60 to-pink-50/30',
     iconBg: 'bg-rose-100/60 text-rose-600',
     hoverBorder: 'hover:border-rose-200/50',
-    image: 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=800&q=80',
+    patternBg: '#2d1a1e',
   },
   {
     icon: <Eye size={30} />,
@@ -39,7 +39,7 @@ const gates = [
     accent: 'from-brand-50/80 to-brand-100/40',
     iconBg: 'bg-brand/10 text-brand',
     hoverBorder: 'hover:border-brand/20',
-    image: 'https://images.unsplash.com/photo-1585095595205-e68428a9e205?w=800&q=80',
+    patternBg: '#1a2d1e',
   },
   {
     icon: <GraduationCap size={30} />,
@@ -51,7 +51,7 @@ const gates = [
     accent: 'from-amber-50/60 to-yellow-50/40',
     iconBg: 'bg-amber-100/60 text-amber-700',
     hoverBorder: 'hover:border-amber-200/50',
-    image: 'https://images.unsplash.com/photo-1606567595334-d39972c85dbe?w=800&q=80',
+    patternBg: '#2d2a1a',
   },
 ];
 
@@ -100,16 +100,14 @@ export default function GateSection() {
             >
               <Link href={gate.href} className="block group">
                 <div className={`relative overflow-hidden rounded-2xl lg:rounded-3xl p-8 md:p-10 lg:p-12 bg-gradient-to-br ${gate.accent} border border-gray-100/80 ${gate.hoverBorder} transition-all duration-500 group-hover:shadow-[0_24px_64px_-16px_rgba(0,0,0,0.25)] group-hover:-translate-y-1.5 group-hover:border-transparent`}>
-                  {/* Background image - visible on hover */}
+                  {/* Background pattern - visible on hover */}
                   <div
                     className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                     style={{
-                      backgroundImage: `url(${gate.image})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
+                      backgroundColor: gate.patternBg,
+                      backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,255,255,0.06) 8px, rgba(255,255,255,0.06) 16px)',
                     }}
                   />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/55 transition-all duration-500" />
 
                   {/* Content */}
                   <div className="relative z-10">
