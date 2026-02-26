@@ -18,7 +18,9 @@ const TABLES = [
   { key: 'products', label: '상품', labelEn: 'Products' },
   { key: 'reviews', label: '후기', labelEn: 'Reviews' },
   { key: 'tegu_species', label: '종', labelEn: 'Species' },
-  { key: 'adoptions', label: '개체관리', labelEn: 'Assets' },
+  { key: 'adoptions', label: '분양 개체', labelEn: 'Adoptions' },
+  { key: 'tegu_info', label: '테구정보', labelEn: 'Tegu Info' },
+  { key: 'edu_applications', label: '교육신청', labelEn: 'Education' },
 ];
 
 const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; placeholder?: string }[]> = {
@@ -112,6 +114,28 @@ const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; 
     { key: 'sort_order', label: '정렬순서', type: 'number' },
     { key: 'is_active', label: '활성', type: 'checkbox' },
   ],
+  tegu_info: [
+    { key: 'title', label: '제목', placeholder: '테구 정보 제목' },
+    { key: 'title_en', label: '영문 제목', placeholder: 'Tegu Info Title' },
+    { key: 'content', label: '내용', type: 'textarea', placeholder: '내용을 입력하세요' },
+    { key: 'content_en', label: '영문 내용', type: 'textarea', placeholder: 'Content in English' },
+    { key: 'category', label: '카테고리', placeholder: '종 정보 / 사육 팁 / 브리딩' },
+    { key: 'category_en', label: '영문 카테고리', placeholder: 'Species Info / Care Tips / Breeding' },
+    { key: 'image_url', label: '이미지', type: 'image' },
+    { key: 'sort_order', label: '정렬순서', type: 'number' },
+    { key: 'is_active', label: '활성', type: 'checkbox' },
+  ],
+  edu_applications: [
+    { key: 'org_name', label: '기관명', placeholder: '기관명' },
+    { key: 'org_type', label: '기관유형', type: 'select', placeholder: '학교' },
+    { key: 'contact_name', label: '담당자', placeholder: '담당자 이름' },
+    { key: 'phone', label: '연락처', placeholder: '010-0000-0000' },
+    { key: 'email', label: '이메일', placeholder: 'email@example.com' },
+    { key: 'participants', label: '인원수', type: 'number' },
+    { key: 'preferred_date', label: '희망 날짜', placeholder: '2026-03-01' },
+    { key: 'message', label: '메시지', type: 'textarea', placeholder: '추가 요청 사항' },
+    { key: 'status', label: '상태', type: 'select', placeholder: 'pending' },
+  ],
 };
 
 const TABLE_DISPLAY_COLS: Record<string, string[]> = {
@@ -123,6 +147,8 @@ const TABLE_DISPLAY_COLS: Record<string, string[]> = {
   reviews: ['id', 'author', 'rating', 'type', 'date', 'is_active'],
   tegu_species: ['id', 'name', 'scientific', 'status', 'sort_order', 'is_active'],
   adoptions: ['id', 'image_url', 'name', 'species', 'status', 'sort_order', 'is_active'],
+  tegu_info: ['id', 'image_url', 'title', 'category', 'sort_order', 'is_active'],
+  edu_applications: ['id', 'org_name', 'org_type', 'contact_name', 'phone', 'status'],
 };
 
 const PRODUCT_TYPES = [
@@ -132,8 +158,22 @@ const PRODUCT_TYPES = [
 ];
 
 const ADOPTION_STATUSES = [
-  { value: 'Active', label: 'Active (활동중)' },
-  { value: 'Inactive', label: 'Inactive (비활동)' },
+  { value: 'Active', label: 'Active (분양 가능)' },
+  { value: 'Inactive', label: 'Inactive (분양 완료)' },
+];
+
+const EDU_STATUSES = [
+  { value: 'pending', label: '대기중' },
+  { value: 'confirmed', label: '확정' },
+  { value: 'completed', label: '완료' },
+  { value: 'cancelled', label: '취소' },
+];
+
+const ORG_TYPES = [
+  { value: 'school', label: '학교' },
+  { value: 'government', label: '관공서' },
+  { value: 'university', label: '대학교' },
+  { value: 'other', label: '기타' },
 ];
 
 const COL_LABELS: Record<string, string> = {
@@ -141,6 +181,8 @@ const COL_LABELS: Record<string, string> = {
   is_active: '상태', tag: '태그', date: '날짜', category: '카테고리', icon: '아이콘',
   price: '가격', product_type: '유형', badge: '뱃지', author: '작성자', rating: '평점',
   type: '유형', species: '종', scientific: '학명', status: '상태', morph: '모프',
+  org_name: '기관명', org_type: '유형', contact_name: '담당자', phone: '연락처',
+  content: '내용', participants: '인원', email: '이메일', preferred_date: '희망날짜',
 };
 
 type RecordData = Record<string, unknown>;
@@ -263,6 +305,7 @@ export default function AdminPage() {
     });
     if (activeTab === 'products') newItem.product_type = 'featured';
     if (activeTab === 'adoptions') { newItem.status = 'Active'; newItem.status_en = 'Active'; }
+    if (activeTab === 'edu_applications') { newItem.status = 'pending'; newItem.org_type = 'school'; }
     if (['notices', 'daily_posts', 'reviews'].includes(activeTab)) newItem.date = new Date().toISOString().split('T')[0];
     setEditItem(newItem); setIsNew(true);
   };
@@ -554,7 +597,12 @@ export default function AdminPage() {
                       className="w-full px-4 py-3 rounded-xl text-[13px] focus:outline-none transition-all border border-gray-200 focus:border-brand/40 bg-gray-50/50 focus:bg-white" />
                   ) : field.type === 'select' ? (
                     <CustomSelect
-                      options={activeTab === 'adoptions' && field.key === 'status' ? ADOPTION_STATUSES : PRODUCT_TYPES}
+                      options={
+                        activeTab === 'adoptions' && field.key === 'status' ? ADOPTION_STATUSES :
+                        activeTab === 'edu_applications' && field.key === 'status' ? EDU_STATUSES :
+                        activeTab === 'edu_applications' && field.key === 'org_type' ? ORG_TYPES :
+                        PRODUCT_TYPES
+                      }
                       value={String(editItem[field.key] ?? '')}
                       onChange={(v) => setEditItem({ ...editItem, [field.key]: v })}
                       placeholder={field.placeholder || '선택해주세요'} />

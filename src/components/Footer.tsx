@@ -35,10 +35,12 @@ export default function Footer() {
             <nav className="flex flex-col gap-3.5">
               {[
                 { ko: '공지사항', href: '/main/notices' },
-                { ko: '일상', href: '/main/daily' },
+                { ko: '테구 정보', href: '/main/tegu-info' },
                 { ko: '분양', href: '/main/adoption' },
+                { ko: '일상', href: '/main/daily' },
                 { ko: '사육용품', href: '/main/products' },
                 { ko: '케어가이드', href: '/care-guide' },
+                { ko: '교육 신청', href: '/education' },
                 { ko: '방문예약', href: '/booking' },
                 { ko: '수출(TEIU KOREA)', href: '/export' },
                 { ko: '후기', href: '/reviews' },

@@ -120,3 +120,33 @@ export interface Adoption {
   created_at: string;
   updated_at: string;
 }
+
+export interface TeguInfo {
+  id: number;
+  title: string;
+  title_en: string | null;
+  content: string | null;
+  content_en: string | null;
+  category: string | null;
+  category_en: string | null;
+  image_url: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EduApplication {
+  id: number;
+  org_name: string;
+  org_type: string;
+  contact_name: string;
+  phone: string;
+  email: string | null;
+  participants: number | null;
+  preferred_date: string | null;
+  message: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}

@@ -21,10 +21,12 @@ export default function Header() {
   const navItems = [
     { ko: '홈', en: 'Home', href: '/main' },
     { ko: '공지사항', en: 'Notices', href: '/main/notices' },
-    { ko: '일상', en: 'Daily', href: '/main/daily' },
+    { ko: '테구 정보', en: 'Tegu Info', href: '/main/tegu-info' },
     { ko: '분양', en: 'Adoption', href: '/main/adoption' },
+    { ko: '일상', en: 'Daily', href: '/main/daily' },
     { ko: '사육용품', en: 'Supplies', href: '/main/products' },
     { ko: '케어가이드', en: 'Care Guide', href: '/care-guide' },
+    { ko: '교육 신청', en: 'Education', href: '/education' },
     { ko: '후기', en: 'Reviews', href: '/reviews' },
     { ko: '방문예약', en: 'Reservation', href: '/booking' },
     { ko: '수출(TEIU)', en: 'Export(TEIU)', href: '/export' },

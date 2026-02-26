@@ -10,6 +10,8 @@ const ALLOWED_TABLES = [
   'reviews',
   'tegu_species',
   'adoptions',
+  'tegu_info',
+  'edu_applications',
 ];
 
 function authenticate(req: NextRequest): boolean {

@@ -1,17 +1,17 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Shield, Heart, Eye, GraduationCap, ArrowRight } from 'lucide-react';
+import { BookOpen, Heart, Eye, GraduationCap, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 const gates = [
   {
-    icon: <Shield size={30} />,
-    title: '전문 라인브리딩',
-    titleEn: 'Professional Line Breeding',
-    desc: '혈통과 퀄리티 중심의 전문 육종 시스템.\n검증된 페어링 데이터와 성장 기록을 공개합니다.',
-    href: '/main/adoption',
-    cta: '개체 보기',
+    icon: <BookOpen size={30} />,
+    title: '테구 정보',
+    titleEn: 'Tegu Information',
+    desc: '테구의 종류, 사육 정보, 브리딩 지식을\n전문적이고 알기 쉽게 정리했습니다.',
+    href: '/main/tegu-info',
+    cta: '정보 보기',
     accent: 'from-gray-50 to-gray-100/50',
     iconBg: 'bg-gray-900/[0.06] text-gray-700',
     hoverBorder: 'hover:border-gray-200',
@@ -19,11 +19,11 @@ const gates = [
   },
   {
     icon: <Heart size={30} />,
-    title: '윤리적 분양',
-    titleEn: 'Ethical Adoption',
-    desc: '단순 판매가 아닌, 가족이 될 수 있는 인연 연결.\n건강 인증·성장 기록·케어 교육을 제공합니다.',
-    href: '/contact',
-    cta: '분양 상담',
+    title: '분양 게시판',
+    titleEn: 'Adoption Board',
+    desc: '분양 중인 개체의 상세 정보와 사진을 확인하고\n가족이 될 인연을 만나보세요.',
+    href: '/main/adoption',
+    cta: '개체 보기',
     accent: 'from-rose-50/60 to-pink-50/30',
     iconBg: 'bg-rose-100/60 text-rose-600',
     hoverBorder: 'hover:border-rose-200/50',
@@ -46,7 +46,7 @@ const gates = [
     title: '교육 프로그램',
     titleEn: 'Education Programs',
     desc: '학교·기관·대학을 위한 전문 교육 과정.\n브리딩, 사육 표준, 생태 보호를 배웁니다.',
-    href: '/booking',
+    href: '/education',
     cta: '교육 신청',
     accent: 'from-amber-50/60 to-yellow-50/40',
     iconBg: 'bg-amber-100/60 text-amber-700',
