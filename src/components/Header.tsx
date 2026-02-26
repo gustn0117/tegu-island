@@ -21,7 +21,7 @@ export default function Header() {
   const navItems = [
     { ko: '홈', en: 'Home', href: '/main' },
     { ko: '공지사항', en: 'Notices', href: '/main/notices' },
-    { ko: '테구 정보', en: 'Tegu Info', href: '/main/tegu-info' },
+    { ko: '보유 개체', en: 'Our Assets', href: '/main/assets' },
     { ko: '분양', en: 'Adoption', href: '/main/adoption' },
     { ko: '일상', en: 'Daily', href: '/main/daily' },
     { ko: '사육용품', en: 'Supplies', href: '/main/products' },

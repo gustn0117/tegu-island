@@ -17,9 +17,8 @@ const TABLES = [
   { key: 'daily_posts', label: '일상', labelEn: 'Daily', desc: '홈·일상 게시판', page: '/main, /main/daily' },
   { key: 'products', label: '상품', labelEn: 'Products', desc: '홈·상품 페이지', page: '/main, /main/products' },
   { key: 'reviews', label: '후기', labelEn: 'Reviews', desc: '홈·후기 페이지', page: '/main, /reviews' },
-  { key: 'tegu_species', label: '보유 종 목록', labelEn: 'Species', desc: '종 정보 내보내기 페이지', page: '/export' },
+  { key: 'tegu_species', label: '보유 개체', labelEn: 'Assets', desc: 'OUR ASSETS 페이지·수출 페이지', page: '/main/assets, /export' },
   { key: 'adoptions', label: '분양 개체', labelEn: 'Adoptions', desc: '홈·분양 게시판·상세 페이지', page: '/main, /main/adoption' },
-  { key: 'tegu_info', label: '테구 정보', labelEn: 'Tegu Info', desc: '테구 정보 게시판', page: '/main/tegu-info' },
   { key: 'edu_applications', label: '교육 신청', labelEn: 'Education', desc: '교육 신청 접수 내역 (읽기)', page: '/education' },
 ];
 
@@ -87,9 +86,10 @@ const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; 
     { key: 'is_active', label: '활성', type: 'checkbox' },
   ],
   tegu_species: [
-    { key: 'name', label: '종 이름', placeholder: '아르헨티나 흑백 테구' },
-    { key: 'name_en', label: '영문 이름', placeholder: 'Argentine B&W Tegu' },
-    { key: 'scientific', label: '학명', placeholder: 'Salvator merianae' },
+    { key: 'name', label: '개체명', placeholder: 'SULLIVAN' },
+    { key: 'name_en', label: '영문 개체명', placeholder: 'SULLIVAN' },
+    { key: 'scientific', label: '학명 / 종', placeholder: 'VARANUS SALVATOR SSP.' },
+    { key: 'image_url', label: '이미지', type: 'image' },
     { key: 'status', label: '상태', placeholder: '브리딩중 / 보유중' },
     { key: 'status_en', label: '영문 상태', placeholder: 'Breeding / Keeping' },
     { key: 'sort_order', label: '정렬순서', type: 'number' },
@@ -114,17 +114,6 @@ const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; 
     { key: 'sort_order', label: '정렬순서', type: 'number' },
     { key: 'is_active', label: '활성', type: 'checkbox' },
   ],
-  tegu_info: [
-    { key: 'title', label: '제목', placeholder: '테구 정보 제목' },
-    { key: 'title_en', label: '영문 제목', placeholder: 'Tegu Info Title' },
-    { key: 'content', label: '내용', type: 'textarea', placeholder: '내용을 입력하세요' },
-    { key: 'content_en', label: '영문 내용', type: 'textarea', placeholder: 'Content in English' },
-    { key: 'category', label: '카테고리', placeholder: '종 정보 / 사육 팁 / 브리딩' },
-    { key: 'category_en', label: '영문 카테고리', placeholder: 'Species Info / Care Tips / Breeding' },
-    { key: 'image_url', label: '이미지', type: 'image' },
-    { key: 'sort_order', label: '정렬순서', type: 'number' },
-    { key: 'is_active', label: '활성', type: 'checkbox' },
-  ],
   edu_applications: [
     { key: 'org_name', label: '기관명', placeholder: '기관명' },
     { key: 'org_type', label: '기관유형', type: 'select', placeholder: '학교' },
@@ -145,9 +134,8 @@ const TABLE_DISPLAY_COLS: Record<string, string[]> = {
   daily_posts: ['id', 'image_url', 'title', 'category', 'date', 'is_active'],
   products: ['id', 'image_url', 'name', 'price', 'product_type', 'badge', 'is_active'],
   reviews: ['id', 'author', 'rating', 'type', 'date', 'is_active'],
-  tegu_species: ['id', 'name', 'scientific', 'status', 'sort_order', 'is_active'],
+  tegu_species: ['id', 'image_url', 'name', 'scientific', 'status', 'sort_order', 'is_active'],
   adoptions: ['id', 'image_url', 'name', 'species', 'status', 'sort_order', 'is_active'],
-  tegu_info: ['id', 'image_url', 'title', 'category', 'sort_order', 'is_active'],
   edu_applications: ['id', 'org_name', 'org_type', 'contact_name', 'phone', 'status'],
 };
 

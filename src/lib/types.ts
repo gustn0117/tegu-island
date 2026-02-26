@@ -91,6 +91,7 @@ export interface TeguSpecies {
   scientific: string | null;
   status: string | null;
   status_en: string | null;
+  image_url: string | null;
   sort_order: number;
   is_active: boolean;
   created_at: string;
@@ -114,21 +115,6 @@ export interface Adoption {
   status_en: string | null;
   description: string | null;
   desc_en: string | null;
-  image_url: string | null;
-  sort_order: number;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface TeguInfo {
-  id: number;
-  title: string;
-  title_en: string | null;
-  content: string | null;
-  content_en: string | null;
-  category: string | null;
-  category_en: string | null;
   image_url: string | null;
   sort_order: number;
   is_active: boolean;

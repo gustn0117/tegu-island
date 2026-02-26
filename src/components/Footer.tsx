@@ -35,7 +35,7 @@ export default function Footer() {
             <nav className="flex flex-col gap-3.5">
               {[
                 { ko: '공지사항', href: '/main/notices' },
-                { ko: '테구 정보', href: '/main/tegu-info' },
+                { ko: '보유 개체', href: '/main/assets' },
                 { ko: '분양', href: '/main/adoption' },
                 { ko: '일상', href: '/main/daily' },
                 { ko: '사육용품', href: '/main/products' },
