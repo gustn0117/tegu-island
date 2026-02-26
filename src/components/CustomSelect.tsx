@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, Check } from 'lucide-react';
 
 export interface SelectOption { value: string; label: string }
@@ -11,15 +12,43 @@ export default function CustomSelect({ options, value, onChange, placeholder = '
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
   const selected = options.find(o => o.value === value);
+
+  const updatePosition = useCallback(() => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    setDropdownStyle({
+      position: 'fixed',
+      top: rect.bottom + 8,
+      left: rect.left,
+      width: rect.width,
+    });
+  }, []);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      if (
+        ref.current && !ref.current.contains(e.target as Node) &&
+        listRef.current && !listRef.current.contains(e.target as Node)
+      ) setOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
+
+  useEffect(() => {
+    if (open) {
+      updatePosition();
+      const onScroll = () => updatePosition();
+      window.addEventListener('scroll', onScroll, true);
+      window.addEventListener('resize', onScroll);
+      return () => {
+        window.removeEventListener('scroll', onScroll, true);
+        window.removeEventListener('resize', onScroll);
+      };
+    }
+  }, [open, updatePosition]);
 
   // 열릴 때 선택된 항목으로 스크롤
   useEffect(() => {
@@ -46,11 +75,11 @@ export default function CustomSelect({ options, value, onChange, placeholder = '
         <input tabIndex={-1} className="opacity-0 absolute bottom-0 left-1/2 w-px h-px pointer-events-none" required value="" onChange={() => {}} />
       )}
 
-      {/* dropdown */}
-      {open && (
+      {/* dropdown via portal */}
+      {open && createPortal(
         <div ref={listRef}
-          className="absolute z-50 mt-2 w-full bg-white rounded-2xl border border-gray-100 shadow-xl shadow-black/[0.06] py-1.5 max-h-64 overflow-y-auto overscroll-contain"
-          style={{ animation: 'customSelectIn 0.2s ease-out' }}>
+          className="z-[9999] bg-white rounded-2xl border border-gray-100 shadow-xl shadow-black/[0.06] py-1.5 max-h-64 overflow-y-auto overscroll-contain"
+          style={{ ...dropdownStyle, animation: 'customSelectIn 0.2s ease-out' }}>
           {options.map(opt => {
             const isActive = opt.value === value;
             return (
@@ -65,7 +94,8 @@ export default function CustomSelect({ options, value, onChange, placeholder = '
               </button>
             );
           })}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
