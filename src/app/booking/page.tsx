@@ -18,7 +18,7 @@ export default function BookingPage() {
             </div>
             <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mb-3">준비중입니다</h2>
             <p className="text-base text-gray-500 mb-1">생태 전시 관람 예약 서비스를 준비하고 있습니다.</p>
-            <p className="text-sm text-gray-400">빠른 시일 내에 오픈할 예정이니 조금만 기다려주세요.</p>
+            <p className="text-sm text-gray-400">빠른 시일 내에 오픈 예정이니 조금만 기다려주세요.</p>
           </div>
         </div>
 
