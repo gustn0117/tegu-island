@@ -1,15 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { BookOpen, Heart, Eye, GraduationCap, ArrowRight } from 'lucide-react';
+import { Shield, Heart, Eye, GraduationCap, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 const gates = [
   {
-    icon: <BookOpen size={30} />,
-    title: '테구 정보',
-    titleEn: 'Tegu Information',
-    desc: '테구의 종류, 사육 정보, 브리딩 지식을\n전문적이고 알기 쉽게 정리했습니다.',
+    icon: <Shield size={30} />,
+    title: '전문 라인브리딩',
+    titleEn: 'Professional Line Breeding',
+    desc: '혈통과 유전을 기반으로 한 전문 브리딩.\n건강하고 아름다운 테구를 만들어갑니다.',
     href: '/main/tegu-info',
     cta: '정보 보기',
     accent: 'from-gray-50 to-gray-100/50',
@@ -19,8 +19,8 @@ const gates = [
   },
   {
     icon: <Heart size={30} />,
-    title: '분양 게시판',
-    titleEn: 'Adoption Board',
+    title: '윤리적 분양',
+    titleEn: 'Ethical Adoption',
     desc: '분양 중인 개체의 상세 정보와 사진을 확인하고\n가족이 될 인연을 만나보세요.',
     href: '/main/adoption',
     cta: '개체 보기',
