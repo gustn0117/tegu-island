@@ -4,26 +4,34 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import type { Adoption } from '@/lib/types';
-import { PawPrint } from 'lucide-react';
+import { PawPrint, Heart, ArrowRight, MessageCircle, SlidersHorizontal } from 'lucide-react';
+import CustomSelect, { type SelectOption } from '@/components/CustomSelect';
 
 type FilterType = 'all' | 'available' | 'sold';
 type SortType = 'featured' | 'price-asc' | 'price-desc' | 'newest';
+
+const sortOptions: SelectOption[] = [
+  { value: 'featured', label: '추천순' },
+  { value: 'price-asc', label: '가격 낮은순' },
+  { value: 'price-desc', label: '가격 높은순' },
+  { value: 'newest', label: '최신순' },
+];
 
 function parsePrice(price: string | null): number {
   if (!price) return 0;
   return parseInt(price.replace(/[^0-9]/g, '')) || 0;
 }
 
-function AdoptionCard({ animal }: { animal: Adoption }) {
+function AdoptionCard({ animal, index }: { animal: Adoption; index: number }) {
   const isAvailable = animal.status === 'Active';
   return (
     <Link href={`/main/adoption/${animal.id}`} className="block group">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
-        transition={{ duration: 0.5 }}
-        className="overflow-hidden rounded-2xl bg-white subtle-border card-hover"
+        transition={{ duration: 0.5, delay: index * 0.06 }}
+        className="overflow-hidden rounded-2xl lg:rounded-3xl bg-white subtle-border card-hover"
       >
         <div className="aspect-[4/5] relative overflow-hidden bg-gray-100">
           {animal.image_url ? (
@@ -34,32 +42,44 @@ function AdoptionCard({ animal }: { animal: Adoption }) {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-200">
-              <PawPrint size={48} />
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-white/80">
+                <PawPrint size={28} className="text-gray-200" />
+              </div>
             </div>
           )}
+          {/* Status Badge */}
           <div className="absolute top-3 right-3">
             <span
-              className={`text-[11px] px-3 py-1.5 rounded-lg font-semibold backdrop-blur-sm ${
+              className={`text-[11px] px-3 py-1.5 rounded-xl font-semibold backdrop-blur-md ${
                 isAvailable
-                  ? 'bg-green-500/90 text-white'
+                  ? 'bg-green-500/90 text-white shadow-lg shadow-green-500/25'
                   : 'bg-gray-900/70 text-gray-300'
               }`}
             >
               {isAvailable ? '분양 가능' : '분양 완료'}
             </span>
           </div>
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+            <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-white/90">
+              상세 보기 <ArrowRight size={12} />
+            </span>
+          </div>
         </div>
-        <div className="p-5">
-          <h3 className="text-base font-semibold text-gray-900 mb-1 group-hover:text-brand transition-colors">
+        <div className="p-5 md:p-6">
+          <h3 className="text-[15px] font-display font-bold text-gray-900 mb-1 group-hover:text-brand transition-colors duration-300">
             {animal.name}
           </h3>
           <p className="text-[13px] text-gray-400 mb-3">
             {animal.species}
             {animal.morph ? ` · ${animal.morph}` : ''}
           </p>
-          {animal.price && (
+          {animal.price ? (
             <p className="text-[15px] font-bold text-brand">{animal.price}</p>
+          ) : (
+            <p className="text-[13px] text-gray-300">가격 문의</p>
           )}
         </div>
       </motion.div>
@@ -105,18 +125,19 @@ export default function AdoptionBoardClient({ adoptions }: Props) {
     { key: 'sold', label: '분양 완료', count: soldCount },
   ];
 
-  const sorts: { key: SortType; label: string }[] = [
-    { key: 'featured', label: '추천순' },
-    { key: 'price-asc', label: '가격 낮은순' },
-    { key: 'price-desc', label: '가격 높은순' },
-    { key: 'newest', label: '최신순' },
-  ];
-
   return (
     <section className="pt-36 md:pt-40 pb-28 md:pb-32 px-8">
       <div className="max-w-6xl mx-auto">
         {/* Page Header */}
-        <div className="text-center mb-16 md:mb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-16 md:mb-20"
+        >
+          <div className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center bg-rose-100/60">
+            <Heart size={32} className="text-rose-600" />
+          </div>
           <p
             className="text-[12px] md:text-[13px] tracking-[0.3em] uppercase mb-3 text-gray-400"
             style={{ fontFamily: 'var(--font-accent)' }}
@@ -135,20 +156,28 @@ export default function AdoptionBoardClient({ adoptions }: Props) {
             </div>
             <div className="h-px w-14 md:w-20 bg-gradient-to-l from-transparent to-brand/20" />
           </div>
-        </div>
+          <p className="text-base mt-5 text-gray-500 max-w-lg mx-auto leading-relaxed">
+            건강하고 아름다운 테구를 만나보세요
+          </p>
+        </motion.div>
 
         {/* Filter & Sort Bar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10 p-4 md:p-5 rounded-2xl bg-white subtle-border"
+        >
           {/* Filter pills */}
           <div className="flex flex-wrap items-center gap-2">
             {filters.map((f) => (
               <button
                 key={f.key}
                 onClick={() => setFilter(f.key)}
-                className={`px-4 py-2 rounded-full text-[13px] transition-all duration-300 ${
+                className={`px-5 py-2.5 rounded-full text-[13px] transition-all duration-300 ${
                   filter === f.key
-                    ? 'bg-brand text-white font-medium'
-                    : 'bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600'
+                    ? 'bg-brand text-white font-medium shadow-lg shadow-brand/20'
+                    : 'bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-600'
                 }`}
               >
                 {f.label}
@@ -158,50 +187,76 @@ export default function AdoptionBoardClient({ adoptions }: Props) {
           </div>
 
           {/* Sort */}
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] text-gray-400 shrink-0">정렬</span>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as SortType)}
-              className="text-[13px] px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-600 focus:outline-none focus:border-brand/40"
-            >
-              {sorts.map((s) => (
-                <option key={s.key} value={s.key}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            <SlidersHorizontal size={14} className="text-gray-300 shrink-0" />
+            <div className="w-full sm:w-44">
+              <CustomSelect
+                options={sortOptions}
+                value={sort}
+                onChange={(v) => setSort(v as SortType)}
+                placeholder="정렬"
+              />
+            </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Grid */}
         {filtered.length === 0 ? (
-          <div className="py-20 text-center">
-            <PawPrint size={32} className="mx-auto mb-4 text-gray-200" />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="py-24 text-center rounded-2xl lg:rounded-3xl bg-white subtle-border"
+          >
+            <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center bg-gray-50">
+              <PawPrint size={28} className="text-gray-200" />
+            </div>
             <p className="text-base text-gray-400">해당하는 개체가 없습니다</p>
-          </div>
+          </motion.div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filtered.map((animal) => (
-              <AdoptionCard key={animal.id} animal={animal} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filtered.map((animal, i) => (
+                <AdoptionCard key={animal.id} animal={animal} index={i} />
+              ))}
+            </div>
+            {/* Result count */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-center text-[13px] text-gray-300 mt-8"
+            >
+              {filtered.length}개의 개체
+            </motion.p>
+          </>
         )}
 
         {/* Inquiry CTA */}
-        <div className="mt-16 text-center">
-          <div className="inline-flex flex-col items-center gap-3 p-8 rounded-2xl bg-gray-50/50 border border-gray-100">
-            <p className="text-[14px] text-gray-500">
-              분양에 관심이 있으신가요?
-            </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mt-20 text-center"
+        >
+          <div className="inline-flex flex-col items-center gap-5 p-10 md:p-12 rounded-2xl lg:rounded-3xl bg-gradient-to-br from-brand/[0.03] to-brand/[0.06] border border-brand/[0.08]">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-brand/[0.08]">
+              <MessageCircle size={24} className="text-brand" />
+            </div>
+            <div>
+              <h3 className="text-lg font-display font-bold text-gray-900 mb-1.5">분양에 관심이 있으신가요?</h3>
+              <p className="text-[14px] text-gray-400">개체에 대한 상세 문의를 남겨주세요</p>
+            </div>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl text-[14px] font-medium btn-primary"
+              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl text-[14px] font-semibold btn-primary"
             >
+              <MessageCircle size={16} />
               분양 상담 신청하기
+              <ArrowRight size={14} />
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
