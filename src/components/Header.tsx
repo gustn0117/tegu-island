@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Menu, X, Phone, Globe, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { socialLinks } from '@/lib/socialLinks';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -57,6 +58,20 @@ export default function Header() {
                   <Globe size={11} />
                   {lang === 'ko' ? 'EN' : 'KO'}
                 </button>
+                <div className="flex items-center gap-1.5 ml-1">
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.name}
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={social.name}
+                      className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center text-white hover:bg-gray-400 transition-colors duration-300"
+                    >
+                      {social.icon}
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
