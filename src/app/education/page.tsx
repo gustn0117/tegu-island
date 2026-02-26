@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CheckCircle, GraduationCap, ArrowRight } from 'lucide-react';
+import { CheckCircle, GraduationCap, ArrowRight, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const ORG_TYPES = [
@@ -21,16 +21,88 @@ const PARTICIPANT_OPTIONS = [
   { value: '100', label: '50명 이상' },
 ];
 
+function getUpcomingMonths(count: number) {
+  const months: { value: string; label: string; monthLabel: string; year: number; month: number }[] = [];
+  const now = new Date();
+  for (let i = 1; i <= count; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+    const year = d.getFullYear();
+    const month = d.getMonth() + 1;
+    months.push({
+      value: `${year}-${String(month).padStart(2, '0')}`,
+      label: `${month}월`,
+      monthLabel: `${year}년 ${month}월`,
+      year,
+      month,
+    });
+  }
+  return months;
+}
+
+function getDaysInMonth(year: number, month: number) {
+  return new Date(year, month, 0).getDate();
+}
+
+function getFirstDayOfWeek(year: number, month: number) {
+  return new Date(year, month - 1, 1).getDay();
+}
+
+const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
+
+function SectionHeader({ num, title, desc, delay = 0 }: { num: string; title: string; desc: string; delay?: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay }}
+      className="mb-8"
+    >
+      <p className="text-[12px] font-bold text-brand/40 tracking-widest mb-3"
+        style={{ fontFamily: 'var(--font-accent)' }}>
+        {num}
+      </p>
+      <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 leading-snug">
+        {title}
+      </h2>
+      <p className="text-[14px] text-gray-400 mt-2 leading-relaxed">{desc}</p>
+    </motion.div>
+  );
+}
+
 export default function EducationPage() {
   const [form, setForm] = useState({
     org_name: '', org_type: '', org_type_custom: '',
     contact_name: '', phone: '', email: '',
     participants: '', preferred_date: '', message: '',
   });
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const inputClass = 'w-full px-5 py-4 rounded-2xl bg-white text-sm text-gray-800 placeholder-gray-300 focus:outline-none transition-all duration-300 border border-gray-200 focus:border-brand/40 focus:ring-2 focus:ring-brand/10';
+
+  const upcomingMonths = useMemo(() => getUpcomingMonths(6), []);
+
+  const selectedMonthData = upcomingMonths.find((m) => m.value === selectedMonth);
+  const calendarDays = useMemo(() => {
+    if (!selectedMonthData) return null;
+    const { year, month } = selectedMonthData;
+    const daysInMonth = getDaysInMonth(year, month);
+    const firstDay = getFirstDayOfWeek(year, month);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const blanks = Array.from({ length: firstDay }, () => null);
+    const days = Array.from({ length: daysInMonth }, (_, i) => {
+      const day = i + 1;
+      const date = new Date(year, month - 1, day);
+      const isPast = date < today;
+      const isSunday = date.getDay() === 0;
+      return { day, value: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`, isPast, isSunday };
+    });
+
+    return { blanks, days };
+  }, [selectedMonthData]);
 
   const orgTypeValid = form.org_type && (form.org_type !== 'other' || form.org_type_custom);
   const canSubmit = form.org_name && orgTypeValid && form.contact_name && form.phone;
@@ -52,6 +124,10 @@ export default function EducationPage() {
     setSubmitting(false);
   };
 
+  const handleDateSelect = (dateValue: string) => {
+    setForm({ ...form, preferred_date: form.preferred_date === dateValue ? '' : dateValue });
+  };
+
   return (
     <>
       <Header />
@@ -62,7 +138,7 @@ export default function EducationPage() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center mb-16 md:mb-20"
+            className="text-center mb-20 md:mb-24"
           >
             <p
               className="text-[12px] md:text-[13px] tracking-[0.3em] uppercase mb-3 text-gray-400"
@@ -100,19 +176,13 @@ export default function EducationPage() {
               </p>
             </motion.div>
           ) : (
-            <div className="space-y-16">
+            <div>
 
               {/* Section 1: 기관 유형 */}
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-              >
-                <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 mb-2">
-                  기관 유형.
-                  <span className="font-normal text-gray-400 ml-1">어떤 기관에서 신청하시나요?</span>
-                </h2>
-                <div className="mt-8 space-y-3">
+              <section className="pb-16 border-b border-gray-100">
+                <SectionHeader num="01" title="기관 유형" desc="어떤 기관에서 신청하시나요?" delay={0.1} />
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}
+                  className="space-y-3">
                   {ORG_TYPES.map((type) => (
                     <button
                       key={type.value}
@@ -127,60 +197,50 @@ export default function EducationPage() {
                       <div>
                         <p className={`text-[15px] font-medium ${
                           form.org_type === type.value ? 'text-gray-900' : 'text-gray-700'
-                        }`}>
-                          {type.label}
-                        </p>
+                        }`}>{type.label}</p>
                         <p className="text-[13px] text-gray-400 mt-0.5">{type.desc}</p>
                       </div>
-                      {form.org_type === type.value && (
-                        <div className="w-6 h-6 rounded-full bg-brand flex items-center justify-center shrink-0">
+                      <div className={`w-6 h-6 rounded-full shrink-0 flex items-center justify-center transition-all duration-300 ${
+                        form.org_type === type.value
+                          ? 'bg-brand'
+                          : 'border-2 border-gray-200'
+                      }`}>
+                        {form.org_type === type.value && (
                           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                             <path d="M2 6L5 9L10 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </button>
                   ))}
-                </div>
-                {form.org_type === 'other' && (
-                  <div className="mt-4">
-                    <input type="text" value={form.org_type_custom}
-                      onChange={(e) => setForm({ ...form, org_type_custom: e.target.value })}
-                      placeholder="기관 유형을 직접 입력해주세요"
-                      className={inputClass} />
-                  </div>
-                )}
-              </motion.section>
+                  {form.org_type === 'other' && (
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+                      className="pt-1">
+                      <input type="text" value={form.org_type_custom}
+                        onChange={(e) => setForm({ ...form, org_type_custom: e.target.value })}
+                        placeholder="기관 유형을 직접 입력해주세요"
+                        className={inputClass} />
+                    </motion.div>
+                  )}
+                </motion.div>
+              </section>
 
               {/* Section 2: 기관명 */}
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.15 }}
-              >
-                <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 mb-2">
-                  기관명.
-                  <span className="font-normal text-gray-400 ml-1">기관의 정확한 이름을 입력해주세요.</span>
-                </h2>
-                <div className="mt-8">
+              <section className="py-16 border-b border-gray-100">
+                <SectionHeader num="02" title="기관명" desc="기관의 정확한 이름을 입력해주세요." delay={0.15} />
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
                   <input type="text" value={form.org_name}
                     onChange={(e) => setForm({ ...form, org_name: e.target.value })}
                     placeholder="예: OO초등학교"
                     className={inputClass} />
-                </div>
-              </motion.section>
+                </motion.div>
+              </section>
 
               {/* Section 3: 담당자 정보 */}
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 mb-2">
-                  담당자 정보.
-                  <span className="font-normal text-gray-400 ml-1">연락받으실 분의 정보를 입력해주세요.</span>
-                </h2>
-                <div className="mt-8 space-y-4">
+              <section className="py-16 border-b border-gray-100">
+                <SectionHeader num="03" title="담당자 정보" desc="연락받으실 분의 정보를 입력해주세요." delay={0.2} />
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}
+                  className="space-y-4">
                   <input type="text" value={form.contact_name}
                     onChange={(e) => setForm({ ...form, contact_name: e.target.value })}
                     placeholder="담당자 이름"
@@ -195,20 +255,14 @@ export default function EducationPage() {
                       placeholder="이메일 (선택)"
                       className={inputClass} />
                   </div>
-                </div>
-              </motion.section>
+                </motion.div>
+              </section>
 
               {/* Section 4: 참여 인원 */}
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.25 }}
-              >
-                <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 mb-2">
-                  참여 인원.
-                  <span className="font-normal text-gray-400 ml-1">예상 참여 인원수를 선택해주세요.</span>
-                </h2>
-                <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <section className="py-16 border-b border-gray-100">
+                <SectionHeader num="04" title="참여 인원" desc="예상 참여 인원수를 선택해주세요." delay={0.25} />
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
+                  className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {PARTICIPANT_OPTIONS.map((opt) => (
                     <button
                       key={opt.value}
@@ -223,43 +277,112 @@ export default function EducationPage() {
                       {opt.label}
                     </button>
                   ))}
-                </div>
-              </motion.section>
+                </motion.div>
+              </section>
 
               {/* Section 5: 희망 날짜 */}
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 mb-2">
-                  희망 날짜.
-                  <span className="font-normal text-gray-400 ml-1">교육을 원하시는 날짜가 있다면 선택해주세요.</span>
-                </h2>
-                <div className="mt-8">
-                  <input type="date" value={form.preferred_date}
-                    onChange={(e) => setForm({ ...form, preferred_date: e.target.value })}
-                    className={inputClass} />
-                </div>
-              </motion.section>
+              <section className="py-16 border-b border-gray-100">
+                <SectionHeader num="05" title="희망 날짜" desc="교육을 원하시는 날짜를 선택해주세요. (선택)" delay={0.3} />
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}>
+                  {/* Month selector */}
+                  <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                    {upcomingMonths.map((m) => (
+                      <button
+                        key={m.value}
+                        type="button"
+                        onClick={() => {
+                          setSelectedMonth(selectedMonth === m.value ? '' : m.value);
+                          setForm({ ...form, preferred_date: '' });
+                        }}
+                        className={`shrink-0 px-5 py-3 rounded-2xl border text-center transition-all duration-300 ${
+                          selectedMonth === m.value
+                            ? 'border-brand bg-brand text-white font-medium shadow-lg shadow-brand/20'
+                            : 'border-gray-200 text-gray-500 hover:border-gray-300 bg-white'
+                        }`}
+                      >
+                        <p className={`text-[18px] font-bold ${selectedMonth === m.value ? 'text-white' : 'text-gray-800'}`}>
+                          {m.label}
+                        </p>
+                        <p className={`text-[11px] mt-0.5 ${selectedMonth === m.value ? 'text-white/70' : 'text-gray-400'}`}>
+                          {m.year}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Calendar grid */}
+                  {calendarDays && selectedMonthData && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="mt-6 p-5 md:p-6 rounded-2xl border border-gray-100 bg-white"
+                    >
+                      <div className="flex items-center gap-2 mb-5">
+                        <Calendar size={16} className="text-brand" />
+                        <p className="text-[14px] font-semibold text-gray-700">
+                          {selectedMonthData.monthLabel}
+                        </p>
+                      </div>
+                      {/* Weekday headers */}
+                      <div className="grid grid-cols-7 mb-2">
+                        {WEEKDAYS.map((w, i) => (
+                          <div key={w} className={`text-center text-[11px] font-medium py-1 ${
+                            i === 0 ? 'text-red-300' : 'text-gray-400'
+                          }`}>
+                            {w}
+                          </div>
+                        ))}
+                      </div>
+                      {/* Day cells */}
+                      <div className="grid grid-cols-7 gap-1">
+                        {calendarDays.blanks.map((_, i) => (
+                          <div key={`blank-${i}`} />
+                        ))}
+                        {calendarDays.days.map((d) => {
+                          const isSelected = form.preferred_date === d.value;
+                          const isDisabled = d.isPast;
+                          return (
+                            <button
+                              key={d.day}
+                              type="button"
+                              disabled={isDisabled}
+                              onClick={() => handleDateSelect(d.value)}
+                              className={`aspect-square rounded-xl flex items-center justify-center text-[13px] transition-all duration-200 ${
+                                isSelected
+                                  ? 'bg-brand text-white font-bold shadow-md shadow-brand/25'
+                                  : isDisabled
+                                  ? 'text-gray-200 cursor-not-allowed'
+                                  : d.isSunday
+                                  ? 'text-red-400 hover:bg-red-50'
+                                  : 'text-gray-600 hover:bg-gray-50'
+                              }`}
+                            >
+                              {d.day}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {form.preferred_date && (
+                        <p className="text-[13px] text-brand font-medium mt-4 text-center">
+                          {form.preferred_date.replace(/-/g, '. ')} 선택됨
+                        </p>
+                      )}
+                    </motion.div>
+                  )}
+                </motion.div>
+              </section>
 
               {/* Section 6: 추가 요청사항 */}
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.35 }}
-              >
-                <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 mb-2">
-                  추가 요청사항.
-                  <span className="font-normal text-gray-400 ml-1">전달할 내용이 있다면 작성해주세요.</span>
-                </h2>
-                <div className="mt-8">
+              <section className="py-16">
+                <SectionHeader num="06" title="추가 요청사항" desc="전달할 내용이 있다면 작성해주세요. (선택)" delay={0.35} />
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
                   <textarea value={form.message}
                     onChange={(e) => setForm({ ...form, message: e.target.value })}
                     rows={4} placeholder="교육 관련 추가 요청사항을 자유롭게 작성해주세요."
                     className={`${inputClass} resize-none`} />
-                </div>
-              </motion.section>
+                </motion.div>
+              </section>
 
               {/* Divider */}
               <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
@@ -269,7 +392,7 @@ export default function EducationPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="space-y-6"
+                className="pt-16 space-y-6"
               >
                 <div className="flex items-start gap-4 p-6 rounded-2xl bg-gray-50 border border-gray-100">
                   <GraduationCap size={18} className="text-gray-400 mt-0.5 shrink-0" />
