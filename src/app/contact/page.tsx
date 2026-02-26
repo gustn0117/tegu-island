@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import KakaoButton from '@/components/KakaoButton';
+
 import CustomSelect, { type SelectOption } from '@/components/CustomSelect';
 import { CheckCircle, MessageCircle } from 'lucide-react';
 
@@ -115,7 +115,6 @@ export default function ContactPage() {
         </div>
       </main>
       <Footer />
-      <KakaoButton />
     </>
   );
 }

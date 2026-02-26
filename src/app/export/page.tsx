@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import KakaoButton from '@/components/KakaoButton';
+
 import { supabase } from '@/lib/supabase';
 import type { TeguSpecies } from '@/lib/types';
 import { FileCheck, Truck, Mail, Shield, Globe, ArrowRight } from 'lucide-react';
@@ -147,7 +147,6 @@ export default async function ExportPage() {
         </div>
       </main>
       <Footer />
-      <KakaoButton />
     </>
   );
 }

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import KakaoButton from '@/components/KakaoButton';
+
 import CustomSelect from '@/components/CustomSelect';
 import { Calendar, Clock, Users, CheckCircle, AlertCircle } from 'lucide-react';
 
@@ -166,7 +166,6 @@ export default function BookingPage() {
         </div>
       </main>
       <Footer />
-      <KakaoButton />
     </>
   );
 }

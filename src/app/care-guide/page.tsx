@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import KakaoButton from '@/components/KakaoButton';
+
 import { Thermometer, UtensilsCrossed, Home, Snowflake } from 'lucide-react';
 import { ReactNode } from 'react';
 
@@ -111,7 +111,6 @@ export default function CareGuidePage() {
         </div>
       </main>
       <Footer />
-      <KakaoButton />
     </>
   );
 }

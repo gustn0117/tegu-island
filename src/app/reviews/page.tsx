@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import KakaoButton from '@/components/KakaoButton';
+
 import { supabase } from '@/lib/supabase';
 import type { Review } from '@/lib/types';
 import { Star, Quote, MessageSquare } from 'lucide-react';
@@ -88,7 +88,6 @@ export default async function ReviewsPage() {
         </div>
       </main>
       <Footer />
-      <KakaoButton />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import KakaoButton from '@/components/KakaoButton';
+
 import { Shield, Heart, Leaf, AlertTriangle } from 'lucide-react';
 
 export default function PolicyPage() {
@@ -114,7 +114,6 @@ export default function PolicyPage() {
         </div>
       </main>
       <Footer />
-      <KakaoButton />
     </>
   );
 }

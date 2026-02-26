@@ -1,6 +1,6 @@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import KakaoButton from '@/components/KakaoButton';
+
 import Link from 'next/link';
 import { Mail, MessageCircle, ArrowRight, Shield, Leaf, Heart, BookOpen } from 'lucide-react';
 
@@ -96,7 +96,6 @@ export default function EnglishPage() {
         </div>
       </main>
       <Footer />
-      <KakaoButton />
     </>
   );
 }

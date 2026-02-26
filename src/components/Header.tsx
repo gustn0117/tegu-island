@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, Phone, MessageCircle, Globe, ChevronRight } from 'lucide-react';
+import { Menu, X, Phone, Globe, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
@@ -50,11 +50,6 @@ export default function Header() {
                 <span className="hidden lg:inline text-gray-300 tracking-wide">서울 금천구 가산디지털1로 100 에이스골드타워 211호</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <a href="https://pf.kakao.com/" target="_blank" rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-[12px] px-4 py-1.5 rounded-full bg-yellow-50 text-yellow-700 transition-all duration-300 hover:bg-yellow-100 hover:shadow-sm">
-                  <MessageCircle size={11} />
-                  카카오톡
-                </a>
                 <button
                   onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
                   className="flex items-center gap-1.5 text-[12px] px-4 py-1.5 rounded-full transition-all duration-300 hover:bg-gray-50 border border-gray-200/80 text-gray-500"
@@ -157,10 +152,6 @@ export default function Header() {
             >
               <a href="tel:010-8802-8361" className="flex items-center gap-2.5 text-[15px] text-gray-400">
                 <Phone size={15} /> 010-8802-8361
-              </a>
-              <a href="https://pf.kakao.com/" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-2.5 text-[14px] font-medium px-5 py-3 rounded-xl w-fit bg-yellow-50 text-yellow-700 transition-all">
-                <MessageCircle size={15} /> 카카오톡 문의
               </a>
               <button onClick={() => setLang(lang === 'ko' ? 'en' : 'ko')}
                 className="flex items-center gap-2.5 px-5 py-3 rounded-full border border-gray-200 hover:bg-gray-50 text-[14px] text-gray-400 transition-all">
