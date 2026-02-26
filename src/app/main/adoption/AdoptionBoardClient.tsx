@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import type { Adoption } from '@/lib/types';
-import { PawPrint, Heart, ArrowRight, MessageCircle, SlidersHorizontal } from 'lucide-react';
+import { PawPrint, Heart, ArrowRight, SlidersHorizontal } from 'lucide-react';
 import CustomSelect, { type SelectOption } from '@/components/CustomSelect';
 
 type FilterType = 'all' | 'available' | 'sold';
@@ -233,27 +233,24 @@ export default function AdoptionBoardClient({ adoptions }: Props) {
 
         {/* Inquiry CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mt-20 text-center"
+          className="mt-20"
         >
-          <div className="inline-flex flex-col items-center gap-5 p-10 md:p-12 rounded-2xl lg:rounded-3xl bg-gradient-to-br from-brand/[0.03] to-brand/[0.06] border border-brand/[0.08]">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-brand/[0.08]">
-              <MessageCircle size={24} className="text-brand" />
-            </div>
+          <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent mb-16" />
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
-              <h3 className="text-lg font-display font-bold text-gray-900 mb-1.5">분양에 관심이 있으신가요?</h3>
-              <p className="text-[14px] text-gray-400">개체에 대한 상세 문의를 남겨주세요</p>
+              <p className="text-[13px] text-gray-400 mb-1">관심 있는 개체가 있으신가요?</p>
+              <p className="text-lg font-display font-bold text-gray-900">분양 상담을 신청해보세요</p>
             </div>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl text-[14px] font-semibold btn-primary"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl text-[14px] font-semibold btn-outline shrink-0 group"
             >
-              <MessageCircle size={16} />
-              분양 상담 신청하기
-              <ArrowRight size={14} />
+              분양 상담 신청
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
           </div>
         </motion.div>
