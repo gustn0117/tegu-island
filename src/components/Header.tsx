@@ -95,11 +95,13 @@ export default function Header() {
               <Link
                 key={item.ko}
                 href={item.href}
-                className="en-tooltip relative px-4 py-2.5 text-[14px] rounded-lg hover:bg-gray-50/80 transition-all duration-300 group text-gray-500"
-                data-en={item.en}
+                className="relative px-4 py-2.5 text-[14px] rounded-lg hover:bg-gray-50/80 transition-all duration-300 group text-gray-500"
               >
-                <span className="group-hover:text-gray-900 transition-colors duration-300">
+                <span className="group-hover:opacity-0 transition-opacity duration-300">
                   {lang === 'ko' ? item.ko : item.en}
+                </span>
+                <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-gray-900" style={{ fontFamily: 'var(--font-accent)', fontSize: '13px', letterSpacing: '0.5px' }}>
+                  {item.en}
                 </span>
                 <span className="absolute bottom-1 left-4 right-4 h-[2px] scale-x-0 group-hover:scale-x-100 rounded-full transition-transform duration-300 origin-left bg-brand" />
               </Link>
