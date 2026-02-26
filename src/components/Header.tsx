@@ -54,7 +54,7 @@ const navGroups: NavGroup[] = [
   { ko: '수출', en: 'Export', href: '/export' },
 ];
 
-function DesktopDropdown({ group, lang }: { group: NavGroup; lang: 'ko' | 'en' }) {
+function DesktopDropdown({ group }: { group: NavGroup }) {
   const [open, setOpen] = useState(false);
   const timeout = useRef<ReturnType<typeof setTimeout>>();
 
@@ -64,15 +64,15 @@ function DesktopDropdown({ group, lang }: { group: NavGroup; lang: 'ko' | 'en' }
   if (!group.children) {
     return (
       <Link href={group.href!}
-        className="relative px-4 py-2.5 text-[14px] rounded-lg hover:bg-gray-50/80 transition-all duration-300 group text-gray-500">
-        <span className="group-hover:opacity-0 transition-opacity duration-300">
-          {lang === 'ko' ? group.ko : group.en}
+        className="relative px-4 py-2 rounded-lg hover:bg-gray-50/80 transition-all duration-300 group text-center">
+        <span className="block text-[13px] font-medium text-gray-600 group-hover:text-gray-900 transition-colors duration-300">
+          {group.ko}
         </span>
-        <span className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-gray-900"
-          style={{ fontFamily: 'var(--font-accent)', fontSize: '13px', letterSpacing: '0.5px' }}>
+        <span className="block text-[10px] tracking-[0.08em] text-gray-300 group-hover:text-brand/60 transition-colors duration-300"
+          style={{ fontFamily: 'var(--font-accent)' }}>
           {group.en}
         </span>
-        <span className="absolute bottom-1 left-4 right-4 h-[2px] scale-x-0 group-hover:scale-x-100 rounded-full transition-transform duration-300 origin-left bg-brand" />
+        <span className="absolute bottom-0.5 left-4 right-4 h-[2px] scale-x-0 group-hover:scale-x-100 rounded-full transition-transform duration-300 origin-left bg-brand" />
       </Link>
     );
   }
@@ -80,9 +80,17 @@ function DesktopDropdown({ group, lang }: { group: NavGroup; lang: 'ko' | 'en' }
   return (
     <div className="relative" onMouseEnter={enter} onMouseLeave={leave}>
       <button
-        className={`flex items-center gap-1 px-4 py-2.5 text-[14px] rounded-lg transition-all duration-300 ${open ? 'bg-gray-50/80 text-gray-900' : 'text-gray-500 hover:bg-gray-50/80'}`}>
-        {lang === 'ko' ? group.ko : group.en}
-        <ChevronDown size={13} className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+        className={`flex flex-col items-center px-4 py-2 rounded-lg transition-all duration-300 ${open ? 'bg-gray-50/80' : 'hover:bg-gray-50/80'}`}>
+        <span className="flex items-center gap-1">
+          <span className={`text-[13px] font-medium transition-colors duration-300 ${open ? 'text-gray-900' : 'text-gray-600'}`}>
+            {group.ko}
+          </span>
+          <ChevronDown size={12} className={`text-gray-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+        </span>
+        <span className={`text-[10px] tracking-[0.08em] transition-colors duration-300 ${open ? 'text-brand/60' : 'text-gray-300'}`}
+          style={{ fontFamily: 'var(--font-accent)' }}>
+          {group.en}
+        </span>
       </button>
 
       <AnimatePresence>
@@ -92,13 +100,13 @@ function DesktopDropdown({ group, lang }: { group: NavGroup; lang: 'ko' | 'en' }
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 mt-1 min-w-[180px] bg-white rounded-xl border border-gray-100 shadow-xl shadow-black/[0.06] py-1.5 z-50"
+            className="absolute top-full left-0 mt-1 min-w-[200px] bg-white rounded-xl border border-gray-100 shadow-xl shadow-black/[0.06] py-2 z-50"
           >
             {group.children.map((child) => (
               <Link key={child.ko} href={child.href}
-                className="flex items-center justify-between px-4 py-2.5 text-[13px] text-gray-500 hover:text-gray-900 hover:bg-gray-50/80 transition-all duration-200 group/item">
-                <span>{lang === 'ko' ? child.ko : child.en}</span>
-                <span className="text-[11px] text-gray-300 opacity-0 group-hover/item:opacity-100 transition-opacity"
+                className="flex items-center justify-between px-5 py-3 text-gray-500 hover:text-gray-900 hover:bg-gray-50/80 transition-all duration-200 group/item">
+                <span className="text-[13px]">{child.ko}</span>
+                <span className="text-[11px] text-gray-400 group-hover/item:text-brand/60 transition-colors"
                   style={{ fontFamily: 'var(--font-accent)' }}>
                   {child.en}
                 </span>
@@ -185,7 +193,7 @@ export default function Header() {
           {/* Desktop nav */}
           <nav className="hidden lg:flex items-center gap-0.5">
             {navGroups.map((group) => (
-              <DesktopDropdown key={group.ko} group={group} lang={lang} />
+              <DesktopDropdown key={group.ko} group={group} />
             ))}
           </nav>
 
