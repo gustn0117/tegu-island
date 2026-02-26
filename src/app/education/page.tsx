@@ -32,9 +32,9 @@ export default function EducationPage() {
   const [activeStep, setActiveStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [form, setForm] = useState({
-    org_name: '', org_type: '', contact_name: '',
-    phone: '', email: '', participants: '',
-    preferred_date: '', message: '',
+    org_name: '', org_type: '', org_type_custom: '',
+    contact_name: '', phone: '', email: '',
+    participants: '', preferred_date: '', message: '',
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -54,7 +54,8 @@ export default function EducationPage() {
     setActiveStep(activeStep === step ? -1 : step);
   };
 
-  const canSubmit = form.org_name && form.org_type && form.contact_name && form.phone;
+  const orgTypeValid = form.org_type && (form.org_type !== 'other' || form.org_type_custom);
+  const canSubmit = form.org_name && orgTypeValid && form.contact_name && form.phone;
 
   const handleSubmit = async () => {
     if (!canSubmit || submitting) return;
@@ -63,7 +64,10 @@ export default function EducationPage() {
       const res = await fetch('/api/education', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          org_type: form.org_type === 'other' ? form.org_type_custom : form.org_type,
+        }),
       });
       if (res.ok) setSubmitted(true);
     } catch { /* ignore */ }
@@ -183,7 +187,7 @@ export default function EducationPage() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.1 + idx * 0.05 }}
-                    className={`rounded-2xl lg:rounded-3xl overflow-hidden transition-all duration-500 ${
+                    className={`rounded-2xl lg:rounded-3xl transition-all duration-500 ${
                       isActive
                         ? 'bg-white shadow-xl shadow-brand/[0.04] border border-brand/15'
                         : isCompleted
@@ -261,10 +265,18 @@ export default function EducationPage() {
                                 <div>
                                   <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">기관 유형 *</label>
                                   <CustomSelect required options={orgTypeOptions} value={form.org_type}
-                                    onChange={(v) => setForm({ ...form, org_type: v })} placeholder="선택해주세요" />
+                                    onChange={(v) => setForm({ ...form, org_type: v, org_type_custom: '' })} placeholder="선택해주세요" />
                                 </div>
-                                <button onClick={() => form.org_name && form.org_type && completeStep(0)}
-                                  disabled={!form.org_name || !form.org_type}
+                                {form.org_type === 'other' && (
+                                  <div>
+                                    <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">기관 유형 직접 입력 *</label>
+                                    <input type="text" required value={form.org_type_custom}
+                                      onChange={(e) => setForm({ ...form, org_type_custom: e.target.value })}
+                                      placeholder="예: 동물원, 사설학원, 기업 등" className={inputClass} />
+                                  </div>
+                                )}
+                                <button onClick={() => form.org_name && orgTypeValid && completeStep(0)}
+                                  disabled={!form.org_name || !orgTypeValid}
                                   className="flex items-center gap-2 px-7 py-3.5 rounded-2xl text-[13px] font-semibold btn-primary disabled:opacity-40 disabled:cursor-not-allowed mt-3">
                                   다음 단계 <ArrowRight size={14} />
                                 </button>
