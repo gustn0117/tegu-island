@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CustomSelect, { type SelectOption } from '@/components/CustomSelect';
-import { Check, CheckCircle, ChevronDown, GraduationCap } from 'lucide-react';
+import { Check, CheckCircle, ChevronDown, GraduationCap, ArrowRight, BookOpen, Users, CalendarDays, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const orgTypeOptions: SelectOption[] = [
@@ -15,10 +15,17 @@ const orgTypeOptions: SelectOption[] = [
 ];
 
 const STEPS = [
-  { title: '기관 정보', titleEn: 'Organization', desc: '교육을 신청하는 기관 정보를 입력해주세요.' },
-  { title: '담당자 정보', titleEn: 'Contact Person', desc: '연락 담당자의 정보를 입력해주세요.' },
-  { title: '교육 상세', titleEn: 'Program Details', desc: '교육 프로그램 관련 상세 내용을 입력해주세요.' },
-  { title: '추가 요청사항', titleEn: 'Additional Notes', desc: '추가로 전달할 내용이 있다면 작성해주세요.' },
+  { title: '기관 정보', titleEn: 'Organization', desc: '교육을 신청하는 기관 정보를 입력해주세요.', icon: <BookOpen size={16} /> },
+  { title: '담당자 정보', titleEn: 'Contact Person', desc: '연락 담당자의 정보를 입력해주세요.', icon: <Users size={16} /> },
+  { title: '교육 상세', titleEn: 'Program Details', desc: '교육 프로그램 관련 상세 내용을 입력해주세요.', icon: <CalendarDays size={16} /> },
+  { title: '추가 요청사항', titleEn: 'Additional Notes', desc: '추가로 전달할 내용이 있다면 작성해주세요.', icon: <MessageSquare size={16} /> },
+];
+
+const PROGRAMS = [
+  { title: '생태 탐구', desc: '테구의 자연 서식지와 생태를 직접 관찰' },
+  { title: '브리딩 과학', desc: '전문 육종 원리와 유전학 기초' },
+  { title: '사육 표준', desc: '올바른 사육 환경 조성법 실습' },
+  { title: '생태 보호', desc: 'CITES와 야생동물 보전 교육' },
 ];
 
 export default function EducationPage() {
@@ -63,13 +70,24 @@ export default function EducationPage() {
     setSubmitting(false);
   };
 
+  const completedCount = completedSteps.size;
+  const progress = (completedCount / STEPS.length) * 100;
+
   return (
     <>
       <Header />
       <main className="min-h-screen pt-36 md:pt-40 pb-28 md:pb-32 px-8">
         <div className="max-w-3xl mx-auto">
           {/* Page Header */}
-          <div className="text-center mb-20 md:mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="text-center mb-16 md:mb-20"
+          >
+            <div className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center bg-amber-100/60">
+              <GraduationCap size={32} className="text-amber-700" />
+            </div>
             <p
               className="text-[12px] md:text-[13px] tracking-[0.3em] uppercase mb-3 text-gray-400"
               style={{ fontFamily: 'var(--font-accent)' }}
@@ -88,57 +106,122 @@ export default function EducationPage() {
               </div>
               <div className="h-px w-14 md:w-20 bg-gradient-to-l from-transparent to-brand/20" />
             </div>
-            <p className="text-base mt-5 text-gray-500">
+            <p className="text-base mt-5 text-gray-500 max-w-lg mx-auto leading-relaxed">
               학교, 관공서, 대학 등 기관을 위한 전문 교육 프로그램입니다.<br />
-              아래 양식을 작성하여 교육을 신청해주세요.
+              아래 양식을 단계별로 작성해주세요.
             </p>
-          </div>
+          </motion.div>
 
           {submitted ? (
-            <div className="text-center py-24 rounded-2xl lg:rounded-3xl bg-white subtle-border">
-              <div className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center bg-green-500/5">
-                <CheckCircle size={32} className="text-green-500/60" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="text-center py-24 rounded-2xl lg:rounded-3xl bg-white subtle-border"
+            >
+              <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center bg-green-500/5">
+                <CheckCircle size={36} className="text-green-500/60" />
               </div>
-              <h3 className="text-xl font-display font-bold text-gray-900">교육 신청이 접수되었습니다</h3>
-              <p className="text-sm mt-3 text-gray-500/50">
+              <h3 className="text-2xl font-display font-bold text-gray-900">교육 신청이 접수되었습니다</h3>
+              <p className="text-sm mt-3 text-gray-500/50 max-w-sm mx-auto leading-relaxed">
                 확인 후 담당자님께 빠른 시일 내에 연락드리겠습니다.
               </p>
-            </div>
+            </motion.div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-5">
+              {/* Program Preview Cards */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8"
+              >
+                {PROGRAMS.map((prog, i) => (
+                  <div
+                    key={i}
+                    className="p-4 rounded-2xl bg-white subtle-border text-center"
+                  >
+                    <p className="text-[13px] font-semibold text-gray-700 mb-1">{prog.title}</p>
+                    <p className="text-[11px] text-gray-400 leading-relaxed">{prog.desc}</p>
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* Progress Bar */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="rounded-2xl bg-white p-5 subtle-border"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[12px] font-semibold text-gray-500">
+                    진행률
+                  </span>
+                  <span className="text-[12px] font-bold text-brand">
+                    {completedCount} / {STEPS.length} 단계
+                  </span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-brand to-brand-400 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  />
+                </div>
+              </motion.div>
+
+              {/* Steps */}
               {STEPS.map((step, idx) => {
                 const isActive = activeStep === idx;
                 const isCompleted = completedSteps.has(idx);
 
                 return (
-                  <div
+                  <motion.div
                     key={idx}
-                    className={`rounded-2xl overflow-hidden transition-all duration-300 border ${
-                      isActive ? 'border-brand/20 shadow-lg shadow-brand/5' : 'border-gray-100'
-                    } bg-white`}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.1 + idx * 0.05 }}
+                    className={`rounded-2xl lg:rounded-3xl overflow-hidden transition-all duration-500 ${
+                      isActive
+                        ? 'bg-white shadow-xl shadow-brand/[0.04] border border-brand/15'
+                        : isCompleted
+                        ? 'bg-white subtle-border'
+                        : 'bg-white border border-gray-100 hover:border-gray-200'
+                    }`}
                   >
                     {/* Step Header */}
                     <button
                       onClick={() => toggleStep(idx)}
-                      className="w-full flex items-center gap-4 px-7 py-5 text-left"
+                      className="w-full flex items-center gap-4 px-7 py-6 text-left group"
                     >
                       <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 transition-all duration-300 ${
+                        className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-500 ${
                           isCompleted
-                            ? 'bg-brand text-white'
+                            ? 'bg-brand text-white shadow-lg shadow-brand/25'
                             : isActive
-                            ? 'bg-brand/10 text-brand'
-                            : 'bg-gray-100 text-gray-400'
+                            ? 'bg-brand/[0.08] text-brand'
+                            : 'bg-gray-50 text-gray-400 group-hover:bg-gray-100'
                         }`}
                       >
-                        {isCompleted ? <Check size={16} /> : idx + 1}
+                        {isCompleted ? <Check size={18} strokeWidth={2.5} /> : step.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-[15px] font-display font-bold text-gray-900">
-                          {step.title}
-                        </h3>
+                        <div className="flex items-center gap-2.5">
+                          <h3 className={`text-[15px] font-display font-bold transition-colors ${
+                            isActive ? 'text-gray-900' : 'text-gray-700'
+                          }`}>
+                            {step.title}
+                          </h3>
+                          {isCompleted && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-50 text-green-600 font-medium">
+                              완료
+                            </span>
+                          )}
+                        </div>
                         <p
-                          className="text-[11px] text-gray-400 tracking-wide"
+                          className="text-[11px] text-gray-400 tracking-[0.1em]"
                           style={{ fontFamily: 'var(--font-accent)' }}
                         >
                           {step.titleEn}
@@ -146,8 +229,8 @@ export default function EducationPage() {
                       </div>
                       <ChevronDown
                         size={18}
-                        className={`text-gray-300 transition-transform duration-300 shrink-0 ${
-                          isActive ? 'rotate-180' : ''
+                        className={`text-gray-300 transition-transform duration-500 shrink-0 ${
+                          isActive ? 'rotate-180 text-brand' : ''
                         }`}
                       />
                     </button>
@@ -159,149 +242,99 @@ export default function EducationPage() {
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                           className="overflow-hidden"
                         >
-                          <div className="px-7 pb-7 pt-1">
-                            <p className="text-[13px] text-gray-400 mb-6">{step.desc}</p>
+                          <div className="px-7 pb-8 pt-0">
+                            <div className="h-px bg-gradient-to-r from-brand/10 via-brand/5 to-transparent mb-6" />
+                            <p className="text-[13px] text-gray-400 mb-6 leading-relaxed">{step.desc}</p>
 
                             {/* Step 1: Organization */}
                             {idx === 0 && (
-                              <div className="space-y-4">
+                              <div className="space-y-5">
                                 <div>
-                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">
-                                    기관명 *
-                                  </label>
-                                  <input
-                                    type="text"
-                                    required
-                                    value={form.org_name}
+                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">기관명 *</label>
+                                  <input type="text" required value={form.org_name}
                                     onChange={(e) => setForm({ ...form, org_name: e.target.value })}
-                                    placeholder="예: OO초등학교"
-                                    className={inputClass}
-                                  />
+                                    placeholder="예: OO초등학교" className={inputClass} />
                                 </div>
                                 <div>
-                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">
-                                    기관 유형 *
-                                  </label>
-                                  <CustomSelect
-                                    required
-                                    options={orgTypeOptions}
-                                    value={form.org_type}
-                                    onChange={(v) => setForm({ ...form, org_type: v })}
-                                    placeholder="선택해주세요"
-                                  />
+                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">기관 유형 *</label>
+                                  <CustomSelect required options={orgTypeOptions} value={form.org_type}
+                                    onChange={(v) => setForm({ ...form, org_type: v })} placeholder="선택해주세요" />
                                 </div>
-                                <button
-                                  onClick={() => form.org_name && form.org_type && completeStep(0)}
+                                <button onClick={() => form.org_name && form.org_type && completeStep(0)}
                                   disabled={!form.org_name || !form.org_type}
-                                  className="mt-2 px-6 py-3 rounded-xl text-[13px] font-medium btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
-                                >
-                                  다음 단계
+                                  className="flex items-center gap-2 px-7 py-3.5 rounded-2xl text-[13px] font-semibold btn-primary disabled:opacity-40 disabled:cursor-not-allowed mt-3">
+                                  다음 단계 <ArrowRight size={14} />
                                 </button>
                               </div>
                             )}
 
                             {/* Step 2: Contact */}
                             {idx === 1 && (
-                              <div className="space-y-4">
+                              <div className="space-y-5">
                                 <div>
-                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">
-                                    담당자 이름 *
-                                  </label>
-                                  <input
-                                    type="text"
-                                    required
-                                    value={form.contact_name}
+                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">담당자 이름 *</label>
+                                  <input type="text" required value={form.contact_name}
                                     onChange={(e) => setForm({ ...form, contact_name: e.target.value })}
-                                    className={inputClass}
-                                  />
+                                    className={inputClass} />
                                 </div>
-                                <div>
-                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">
-                                    연락처 *
-                                  </label>
-                                  <input
-                                    type="tel"
-                                    required
-                                    value={form.phone}
-                                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                                    placeholder="010-0000-0000"
-                                    className={inputClass}
-                                  />
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                  <div>
+                                    <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">연락처 *</label>
+                                    <input type="tel" required value={form.phone}
+                                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                                      placeholder="010-0000-0000" className={inputClass} />
+                                  </div>
+                                  <div>
+                                    <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">이메일</label>
+                                    <input type="email" value={form.email}
+                                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                                      placeholder="example@school.ac.kr" className={inputClass} />
+                                  </div>
                                 </div>
-                                <div>
-                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">
-                                    이메일
-                                  </label>
-                                  <input
-                                    type="email"
-                                    value={form.email}
-                                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                    placeholder="example@school.ac.kr"
-                                    className={inputClass}
-                                  />
-                                </div>
-                                <button
-                                  onClick={() => form.contact_name && form.phone && completeStep(1)}
+                                <button onClick={() => form.contact_name && form.phone && completeStep(1)}
                                   disabled={!form.contact_name || !form.phone}
-                                  className="mt-2 px-6 py-3 rounded-xl text-[13px] font-medium btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
-                                >
-                                  다음 단계
+                                  className="flex items-center gap-2 px-7 py-3.5 rounded-2xl text-[13px] font-semibold btn-primary disabled:opacity-40 disabled:cursor-not-allowed mt-3">
+                                  다음 단계 <ArrowRight size={14} />
                                 </button>
                               </div>
                             )}
 
                             {/* Step 3: Details */}
                             {idx === 2 && (
-                              <div className="space-y-4">
-                                <div>
-                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">
-                                    참여 인원수
-                                  </label>
-                                  <input
-                                    type="number"
-                                    value={form.participants}
-                                    onChange={(e) => setForm({ ...form, participants: e.target.value })}
-                                    placeholder="예: 30"
-                                    className={inputClass}
-                                  />
+                              <div className="space-y-5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                  <div>
+                                    <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">참여 인원수</label>
+                                    <input type="number" value={form.participants}
+                                      onChange={(e) => setForm({ ...form, participants: e.target.value })}
+                                      placeholder="예: 30" className={inputClass} />
+                                  </div>
+                                  <div>
+                                    <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">희망 날짜</label>
+                                    <input type="date" value={form.preferred_date}
+                                      onChange={(e) => setForm({ ...form, preferred_date: e.target.value })}
+                                      className={inputClass} />
+                                  </div>
                                 </div>
-                                <div>
-                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">
-                                    희망 날짜
-                                  </label>
-                                  <input
-                                    type="date"
-                                    value={form.preferred_date}
-                                    onChange={(e) => setForm({ ...form, preferred_date: e.target.value })}
-                                    className={inputClass}
-                                  />
-                                </div>
-                                <button
-                                  onClick={() => completeStep(2)}
-                                  className="mt-2 px-6 py-3 rounded-xl text-[13px] font-medium btn-primary"
-                                >
-                                  다음 단계
+                                <button onClick={() => completeStep(2)}
+                                  className="flex items-center gap-2 px-7 py-3.5 rounded-2xl text-[13px] font-semibold btn-primary mt-3">
+                                  다음 단계 <ArrowRight size={14} />
                                 </button>
                               </div>
                             )}
 
                             {/* Step 4: Message */}
                             {idx === 3 && (
-                              <div className="space-y-4">
+                              <div className="space-y-5">
                                 <div>
-                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">
-                                    추가 요청사항
-                                  </label>
-                                  <textarea
-                                    value={form.message}
+                                  <label className="text-[13px] text-gray-600/55 mb-2 block font-medium">추가 요청사항</label>
+                                  <textarea value={form.message}
                                     onChange={(e) => setForm({ ...form, message: e.target.value })}
-                                    rows={4}
-                                    placeholder="교육 관련 추가 요청 사항이 있으시면 작성해주세요."
-                                    className={`${inputClass} resize-none`}
-                                  />
+                                    rows={4} placeholder="교육 관련 추가 요청 사항이 있으시면 작성해주세요."
+                                    className={`${inputClass} resize-none`} />
                                 </div>
                               </div>
                             )}
@@ -309,26 +342,35 @@ export default function EducationPage() {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div>
+                  </motion.div>
                 );
               })}
 
               {/* Info Notice */}
-              <div className="flex items-start gap-3 p-6 rounded-2xl bg-amber-50/40 border border-amber-200/15">
-                <GraduationCap size={14} className="text-amber-500/50 mt-0.5 shrink-0" />
-                <p className="text-[13px] text-amber-800/50 leading-relaxed">
-                  교육 프로그램은 테구의 생태, 브리딩, 사육 표준, 생태 보호 등을 포함합니다.
-                  교육 내용은 기관의 요구에 맞게 조정 가능하며, 신청 후 상세 안내를 받으실 수 있습니다.
-                </p>
+              <div className="flex items-start gap-4 p-6 md:p-7 rounded-2xl bg-amber-50/40 border border-amber-200/15">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-amber-100/60">
+                  <GraduationCap size={16} className="text-amber-600" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-semibold text-amber-800/60 mb-1">교육 프로그램 안내</p>
+                  <p className="text-[13px] text-amber-800/40 leading-relaxed">
+                    생태 탐구, 브리딩 과학, 사육 표준, 생태 보호 등 다양한 주제를 포함합니다.
+                    교육 내용은 기관의 요구에 맞게 조정 가능합니다.
+                  </p>
+                </div>
               </div>
 
               {/* Submit */}
               <button
                 onClick={handleSubmit}
                 disabled={!canSubmit || submitting}
-                className="w-full py-4 rounded-2xl text-[15px] tracking-wider font-medium btn-primary transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full py-4.5 rounded-2xl text-[15px] tracking-wider font-semibold btn-primary transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2.5"
               >
-                {submitting ? '신청 중...' : '교육 프로그램 신청하기'}
+                {submitting ? (
+                  '신청 중...'
+                ) : (
+                  <>교육 프로그램 신청하기 <ArrowRight size={16} /></>
+                )}
               </button>
             </div>
           )}
