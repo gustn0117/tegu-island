@@ -11,16 +11,16 @@ import CustomSelect from '@/components/CustomSelect';
 
 /* ───── Table definitions ───── */
 const TABLES = [
-  { key: 'banner_slides', label: '배너', labelEn: 'Banner' },
-  { key: 'notices', label: '공지사항', labelEn: 'Notices' },
-  { key: 'care_sheets', label: '케어시트', labelEn: 'Care Sheets' },
-  { key: 'daily_posts', label: '일상', labelEn: 'Daily' },
-  { key: 'products', label: '상품', labelEn: 'Products' },
-  { key: 'reviews', label: '후기', labelEn: 'Reviews' },
-  { key: 'tegu_species', label: '종', labelEn: 'Species' },
-  { key: 'adoptions', label: '분양 개체', labelEn: 'Adoptions' },
-  { key: 'tegu_info', label: '테구정보', labelEn: 'Tegu Info' },
-  { key: 'edu_applications', label: '교육신청', labelEn: 'Education' },
+  { key: 'banner_slides', label: '배너', labelEn: 'Banner', desc: '홈페이지 메인 슬라이드 배너', page: '/main' },
+  { key: 'notices', label: '공지사항', labelEn: 'Notices', desc: '홈·공지사항 페이지', page: '/main, /main/notices' },
+  { key: 'care_sheets', label: '케어시트', labelEn: 'Care Sheets', desc: '홈페이지 사육 가이드 섹션', page: '/main' },
+  { key: 'daily_posts', label: '일상', labelEn: 'Daily', desc: '홈·일상 게시판', page: '/main, /main/daily' },
+  { key: 'products', label: '상품', labelEn: 'Products', desc: '홈·상품 페이지', page: '/main, /main/products' },
+  { key: 'reviews', label: '후기', labelEn: 'Reviews', desc: '홈·후기 페이지', page: '/main, /reviews' },
+  { key: 'tegu_species', label: '보유 종 목록', labelEn: 'Species', desc: '종 정보 내보내기 페이지', page: '/export' },
+  { key: 'adoptions', label: '분양 개체', labelEn: 'Adoptions', desc: '홈·분양 게시판·상세 페이지', page: '/main, /main/adoption' },
+  { key: 'tegu_info', label: '테구 정보', labelEn: 'Tegu Info', desc: '테구 정보 게시판', page: '/main/tegu-info' },
+  { key: 'edu_applications', label: '교육 신청', labelEn: 'Education', desc: '교육 신청 접수 내역 (읽기)', page: '/education' },
 ];
 
 const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; placeholder?: string }[]> = {
@@ -404,8 +404,11 @@ export default function AdminPage() {
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-left transition-all duration-200 ${
                 activeTab === t.key ? 'bg-brand/[0.06] text-brand font-semibold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
               }`}>
-              <span className="text-[13px]">{t.label}</span>
-              <span className={`text-[11px] px-2 py-0.5 rounded-md ${activeTab === t.key ? 'bg-brand/10 text-brand' : 'bg-gray-100 text-gray-400'}`}>
+              <div className="min-w-0">
+                <span className="text-[13px] block">{t.label}</span>
+                <span className={`text-[10px] block truncate mt-0.5 ${activeTab === t.key ? 'text-brand/50' : 'text-gray-300'}`}>{t.desc}</span>
+              </div>
+              <span className={`text-[11px] px-2 py-0.5 rounded-md shrink-0 ml-2 ${activeTab === t.key ? 'bg-brand/10 text-brand' : 'bg-gray-100 text-gray-400'}`}>
                 {tableCounts[t.key] ?? '–'}
               </span>
             </button>
@@ -431,6 +434,9 @@ export default function AdminPage() {
               <div className="flex items-center gap-2 text-[13px] text-gray-400">
                 <span>관리자</span><ChevronRight size={12} />
                 <span className="font-semibold text-gray-700">{currentTable?.label}</span>
+                {currentTable?.page && (
+                  <span className="text-[11px] text-gray-300 ml-1">→ {currentTable.page}</span>
+                )}
               </div>
             </div>
             <div className="relative">
@@ -460,10 +466,15 @@ export default function AdminPage() {
 
           {/* Toolbar */}
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-[15px] font-bold text-gray-700">
-              {currentTable?.label} 관리
-              {searchQuery && <span className="text-[12px] font-normal text-gray-400 ml-2">&ldquo;{searchQuery}&rdquo; 결과 {filteredData.length}건</span>}
-            </h2>
+            <div>
+              <h2 className="text-[15px] font-bold text-gray-700">
+                {currentTable?.label} 관리
+                {searchQuery && <span className="text-[12px] font-normal text-gray-400 ml-2">&ldquo;{searchQuery}&rdquo; 결과 {filteredData.length}건</span>}
+              </h2>
+              {currentTable?.desc && (
+                <p className="text-[11px] text-gray-400 mt-0.5">표시 위치: {currentTable.desc} ({currentTable.page})</p>
+              )}
+            </div>
             <div className="flex gap-2">
               <button onClick={() => fetchData(activeTab)} className="p-2.5 rounded-xl bg-white text-gray-400 hover:text-gray-600 transition-all border border-gray-200" title="새로고침">
                 <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
