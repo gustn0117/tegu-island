@@ -11,14 +11,14 @@ import CustomSelect from '@/components/CustomSelect';
 
 /* ───── Table definitions ───── */
 const TABLES = [
-  { key: 'banner_slides', label: '배너', labelEn: 'Banner', icon: '🖼' },
-  { key: 'notices', label: '공지사항', labelEn: 'Notices', icon: '📢' },
-  { key: 'care_sheets', label: '케어시트', labelEn: 'Care Sheets', icon: '📋' },
-  { key: 'daily_posts', label: '일상', labelEn: 'Daily', icon: '📷' },
-  { key: 'products', label: '상품', labelEn: 'Products', icon: '🛒' },
-  { key: 'reviews', label: '후기', labelEn: 'Reviews', icon: '⭐' },
-  { key: 'tegu_species', label: '종', labelEn: 'Species', icon: '🦎' },
-  { key: 'adoptions', label: '개체관리', labelEn: 'Assets', icon: '🦎' },
+  { key: 'banner_slides', label: '배너', labelEn: 'Banner' },
+  { key: 'notices', label: '공지사항', labelEn: 'Notices' },
+  { key: 'care_sheets', label: '케어시트', labelEn: 'Care Sheets' },
+  { key: 'daily_posts', label: '일상', labelEn: 'Daily' },
+  { key: 'products', label: '상품', labelEn: 'Products' },
+  { key: 'reviews', label: '후기', labelEn: 'Reviews' },
+  { key: 'tegu_species', label: '종', labelEn: 'Species' },
+  { key: 'adoptions', label: '개체관리', labelEn: 'Assets' },
 ];
 
 const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; placeholder?: string }[]> = {
@@ -361,10 +361,7 @@ export default function AdminPage() {
               className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-left transition-all duration-200 ${
                 activeTab === t.key ? 'bg-brand/[0.06] text-brand font-semibold' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
               }`}>
-              <div className="flex items-center gap-3">
-                <span className="text-[16px]">{t.icon}</span>
-                <span className="text-[13px]">{t.label}</span>
-              </div>
+              <span className="text-[13px]">{t.label}</span>
               <span className={`text-[11px] px-2 py-0.5 rounded-md ${activeTab === t.key ? 'bg-brand/10 text-brand' : 'bg-gray-100 text-gray-400'}`}>
                 {tableCounts[t.key] ?? '–'}
               </span>
@@ -390,7 +387,7 @@ export default function AdminPage() {
               </button>
               <div className="flex items-center gap-2 text-[13px] text-gray-400">
                 <span>관리자</span><ChevronRight size={12} />
-                <span className="font-semibold text-gray-700">{currentTable?.icon} {currentTable?.label}</span>
+                <span className="font-semibold text-gray-700">{currentTable?.label}</span>
               </div>
             </div>
             <div className="relative">
@@ -528,7 +525,7 @@ export default function AdminPage() {
             <div className="flex items-center justify-between px-7 py-5 shrink-0 border-b border-gray-100">
               <div>
                 <h3 className="text-[15px] font-bold text-gray-800">{isNew ? '새 항목 추가' : '항목 수정'}</h3>
-                <p className="text-[11px] text-gray-400 mt-0.5">{currentTable?.icon} {currentTable?.label}{!isNew && ` · ID: ${String(editItem.id)}`}</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">{currentTable?.label}{!isNew && ` · ID: ${String(editItem.id)}`}</p>
               </div>
               <button onClick={() => { setEditItem(null); setIsNew(false); }} className="p-2 rounded-lg text-gray-300 hover:text-gray-500 hover:bg-gray-50 transition-all"><X size={18} /></button>
             </div>
