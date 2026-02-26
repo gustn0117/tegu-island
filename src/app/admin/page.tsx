@@ -18,7 +18,7 @@ const TABLES = [
   { key: 'products', label: '상품', labelEn: 'Products', icon: '🛒' },
   { key: 'reviews', label: '후기', labelEn: 'Reviews', icon: '⭐' },
   { key: 'tegu_species', label: '종', labelEn: 'Species', icon: '🦎' },
-  { key: 'adoptions', label: '분양', labelEn: 'Adoption', icon: '❤️' },
+  { key: 'adoptions', label: '개체관리', labelEn: 'Assets', icon: '🦎' },
 ];
 
 const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; placeholder?: string }[]> = {
@@ -105,8 +105,7 @@ const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; 
     { key: 'age', label: '나이', placeholder: '2024년 출생' },
     { key: 'age_en', label: '영문 나이', placeholder: 'Born 2024' },
     { key: 'price', label: '분양가', placeholder: '₩500,000' },
-    { key: 'status', label: '분양상태', placeholder: '분양가능 / 예약중 / 완료' },
-    { key: 'status_en', label: '영문 상태', placeholder: 'Available / Reserved / Adopted' },
+    { key: 'status', label: '상태', type: 'select', placeholder: 'Active' },
     { key: 'description', label: '설명', type: 'textarea', placeholder: '개체에 대한 상세 설명' },
     { key: 'desc_en', label: '영문 설명', type: 'textarea', placeholder: 'Detailed description' },
     { key: 'image_url', label: '이미지', type: 'image' },
@@ -123,13 +122,18 @@ const TABLE_DISPLAY_COLS: Record<string, string[]> = {
   products: ['id', 'image_url', 'name', 'price', 'product_type', 'badge', 'is_active'],
   reviews: ['id', 'author', 'rating', 'type', 'date', 'is_active'],
   tegu_species: ['id', 'name', 'scientific', 'status', 'sort_order', 'is_active'],
-  adoptions: ['id', 'image_url', 'name', 'species', 'morph', 'status', 'price', 'is_active'],
+  adoptions: ['id', 'image_url', 'name', 'species', 'status', 'sort_order', 'is_active'],
 };
 
 const PRODUCT_TYPES = [
   { value: 'featured', label: '추천상품' },
   { value: 'new', label: '신상품' },
   { value: 'supply', label: '사육용품' },
+];
+
+const ADOPTION_STATUSES = [
+  { value: 'Active', label: 'Active (활동중)' },
+  { value: 'Inactive', label: 'Inactive (비활동)' },
 ];
 
 const COL_LABELS: Record<string, string> = {
@@ -258,7 +262,7 @@ export default function AdminPage() {
       else newItem[f.key] = '';
     });
     if (activeTab === 'products') newItem.product_type = 'featured';
-    if (activeTab === 'adoptions') { newItem.status = '분양가능'; newItem.status_en = 'Available'; }
+    if (activeTab === 'adoptions') { newItem.status = 'Active'; newItem.status_en = 'Active'; }
     if (['notices', 'daily_posts', 'reviews'].includes(activeTab)) newItem.date = new Date().toISOString().split('T')[0];
     setEditItem(newItem); setIsNew(true);
   };
@@ -553,10 +557,10 @@ export default function AdminPage() {
                       className="w-full px-4 py-3 rounded-xl text-[13px] focus:outline-none transition-all border border-gray-200 focus:border-brand/40 bg-gray-50/50 focus:bg-white" />
                   ) : field.type === 'select' ? (
                     <CustomSelect
-                      options={PRODUCT_TYPES}
+                      options={activeTab === 'adoptions' && field.key === 'status' ? ADOPTION_STATUSES : PRODUCT_TYPES}
                       value={String(editItem[field.key] ?? '')}
                       onChange={(v) => setEditItem({ ...editItem, [field.key]: v })}
-                      placeholder="상품 유형 선택" />
+                      placeholder={field.placeholder || '선택해주세요'} />
                   ) : field.type === 'image' ? (
                     <div className="space-y-3">
                       {editItem[field.key] ? (

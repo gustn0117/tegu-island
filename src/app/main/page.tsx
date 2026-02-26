@@ -25,7 +25,7 @@ export default async function MainPage() {
     supabase.from('banner_slides').select('*').eq('is_active', true).order('sort_order'),
     supabase.from('notices').select('*').eq('is_active', true).order('created_at', { ascending: false }),
     supabase.from('care_sheets').select('*').eq('is_active', true).order('sort_order'),
-    supabase.from('adoptions').select('*').eq('is_active', true).order('sort_order').limit(6),
+    supabase.from('adoptions').select('*').eq('is_active', true).eq('status', 'Active').order('sort_order').limit(6),
     supabase.from('daily_posts').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(5),
     supabase.from('products').select('*').eq('is_active', true).eq('product_type', 'featured').order('sort_order').limit(8),
     supabase.from('products').select('*').eq('is_active', true).eq('product_type', 'new').order('sort_order').limit(8),
