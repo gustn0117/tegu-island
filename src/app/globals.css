@@ -79,6 +79,10 @@ p {
     0 8px 24px -8px rgba(0, 0, 0, 0.06),
     0 0 0 1px rgba(0, 0, 0, 0.03);
 }
+.card-hover:focus-visible {
+  outline: 2px solid #215433;
+  outline-offset: 3px;
+}
 
 /* ===== Glass Card ===== */
 .glass-card {
@@ -149,6 +153,7 @@ p {
 .subtle-border {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06),
               0 4px 24px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.5s var(--ease-premium);
 }
 .subtle-border:hover {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
@@ -291,7 +296,7 @@ input:focus, select:focus, textarea:focus {
   opacity: 1;
 }
 .btn-primary:active {
-  transform: translateY(0);
+  transform: translateY(1px) scale(0.98);
   box-shadow: 0 4px 12px rgba(33, 84, 51, 0.2);
 }
 
@@ -307,6 +312,10 @@ input:focus, select:focus, textarea:focus {
   color: #fff;
   box-shadow: 0 12px 32px rgba(33, 84, 51, 0.2);
   transform: translateY(-2px);
+}
+.btn-outline:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(33, 84, 51, 0.15);
 }
 
 /* ===== Image Zoom ===== */

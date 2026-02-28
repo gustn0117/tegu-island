@@ -119,7 +119,7 @@ export function CompactProductColumn({ products, ko, en, delay = 0 }: { products
     >
       <div className="flex items-center justify-between mb-8">
         <div>
-          <p className="text-[11px] tracking-[0.2em] uppercase text-gray-300 mb-1.5"
+          <p className="text-[11px] tracking-[0.2em] uppercase text-gray-400 mb-1.5"
             style={{ fontFamily: 'var(--font-accent)' }}>{en}</p>
           <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">{ko}</h3>
         </div>
@@ -130,7 +130,10 @@ export function CompactProductColumn({ products, ko, en, delay = 0 }: { products
       </div>
       <div className="h-px bg-gray-200 mb-6" />
       {products.length === 0 ? (
-        <p className="py-16 text-center text-[14px] text-gray-300">등록된 {ko}이 없습니다</p>
+        <div className="py-16 flex flex-col items-center gap-3">
+          <Package size={28} className="text-gray-200" />
+          <p className="text-[14px] text-gray-300">등록된 {ko}이 없습니다</p>
+        </div>
       ) : (
         <div className="grid grid-cols-2 gap-4">
           {products.slice(0, 4).map((p) => (

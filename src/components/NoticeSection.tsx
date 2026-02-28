@@ -2,7 +2,7 @@
 
 import type { Notice, CareSheet } from '@/lib/types';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Bell, BookOpen } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface Props {
@@ -24,7 +24,7 @@ export default function NoticeSection({ notices, careSheets }: Props) {
           >
             <div className="flex items-center justify-between mb-8">
               <div>
-                <p className="text-[11px] tracking-[0.2em] uppercase text-gray-300 mb-1.5"
+                <p className="text-[11px] tracking-[0.2em] uppercase text-gray-400 mb-1.5"
                   style={{ fontFamily: 'var(--font-accent)' }}>Notices</p>
                 <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">공지사항</h3>
               </div>
@@ -35,12 +35,15 @@ export default function NoticeSection({ notices, careSheets }: Props) {
             </div>
             <div className="h-px bg-gray-200 mb-2" />
             {notices.length === 0 ? (
-              <p className="py-16 text-center text-[14px] text-gray-300">등록된 공지사항이 없습니다</p>
+              <div className="py-16 flex flex-col items-center gap-3">
+                <Bell size={28} className="text-gray-200" />
+                <p className="text-[14px] text-gray-300">등록된 공지사항이 없습니다</p>
+              </div>
             ) : (
               <div>
                 {notices.map((n) => (
                   <div key={n.id}
-                    className="en-tooltip flex items-center justify-between py-4 border-b border-gray-100 cursor-pointer group transition-colors"
+                    className="en-tooltip flex items-center justify-between py-4 px-3 -mx-3 rounded-lg border-b border-gray-100 cursor-pointer group transition-colors hover:bg-gray-50/80"
                     data-en={n.title_en}>
                     <div className="flex items-center gap-3 min-w-0">
                       <span className={`text-[11px] px-2.5 py-1 rounded shrink-0 font-medium ${
@@ -50,7 +53,7 @@ export default function NoticeSection({ notices, careSheets }: Props) {
                       }`}>{n.tag}</span>
                       <span className="text-[14px] text-gray-600 truncate group-hover:text-gray-900 transition-colors">{n.title}</span>
                     </div>
-                    <span className="text-[12px] text-gray-300 shrink-0 ml-4 tabular-nums">{n.date}</span>
+                    <span className="text-[12px] text-gray-400 shrink-0 ml-4 tabular-nums">{n.date}</span>
                   </div>
                 ))}
               </div>
@@ -66,7 +69,7 @@ export default function NoticeSection({ notices, careSheets }: Props) {
           >
             <div className="flex items-center justify-between mb-8">
               <div>
-                <p className="text-[11px] tracking-[0.2em] uppercase text-gray-300 mb-1.5"
+                <p className="text-[11px] tracking-[0.2em] uppercase text-gray-400 mb-1.5"
                   style={{ fontFamily: 'var(--font-accent)' }}>Care Sheets</p>
                 <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">케어시트</h3>
               </div>
@@ -77,12 +80,15 @@ export default function NoticeSection({ notices, careSheets }: Props) {
             </div>
             <div className="h-px bg-gray-200 mb-6" />
             {careSheets.length === 0 ? (
-              <p className="py-16 text-center text-[14px] text-gray-300">등록된 케어시트가 없습니다</p>
+              <div className="py-16 flex flex-col items-center gap-3">
+                <BookOpen size={28} className="text-gray-200" />
+                <p className="text-[14px] text-gray-300">등록된 케어시트가 없습니다</p>
+              </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {careSheets.map((cs) => (
                   <div key={cs.id}
-                    className="en-tooltip flex items-start gap-4 p-5 rounded-xl cursor-pointer group hover:bg-gray-50 transition-colors"
+                    className="en-tooltip flex items-start gap-4 p-5 rounded-xl border border-gray-100 cursor-pointer group hover:bg-gray-50 hover:border-gray-200 transition-all duration-300"
                     data-en={cs.title_en}>
                     <span className="text-2xl mt-0.5 block shrink-0 transition-transform duration-300 group-hover:scale-110">{cs.icon}</span>
                     <div>

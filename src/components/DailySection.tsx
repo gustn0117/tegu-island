@@ -22,7 +22,7 @@ export default function DailySection({ posts, compact }: Props) {
       >
         <div className="flex items-center justify-between mb-8">
           <div>
-            <p className="text-[11px] tracking-[0.2em] uppercase text-gray-300 mb-1.5"
+            <p className="text-[11px] tracking-[0.2em] uppercase text-gray-400 mb-1.5"
               style={{ fontFamily: 'var(--font-accent)' }}>Daily</p>
             <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">일상</h3>
           </div>
@@ -33,7 +33,10 @@ export default function DailySection({ posts, compact }: Props) {
         </div>
         <div className="h-px bg-gray-200 mb-6" />
         {posts.length === 0 ? (
-          <p className="py-16 text-center text-[14px] text-gray-300">등록된 일상 포스트가 없습니다</p>
+          <div className="py-16 flex flex-col items-center gap-3">
+            <Camera size={28} className="text-gray-200" />
+            <p className="text-[14px] text-gray-300">등록된 일상 포스트가 없습니다</p>
+          </div>
         ) : (
           <div className="space-y-4">
             {posts.slice(0, 4).map((post) => (
@@ -53,7 +56,7 @@ export default function DailySection({ posts, compact }: Props) {
                 <div className="min-w-0 flex-1">
                   <span className="text-[11px] px-2 py-0.5 rounded bg-gray-100 text-gray-500 font-medium">{post.category}</span>
                   <p className="text-[14px] text-gray-600 truncate mt-1.5 group-hover:text-gray-900 transition-colors">{post.title}</p>
-                  <p className="text-[11px] text-gray-300 mt-1">{post.date}</p>
+                  <p className="text-[11px] text-gray-400 mt-1">{post.date}</p>
                 </div>
               </div>
             ))}

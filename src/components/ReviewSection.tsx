@@ -2,7 +2,7 @@
 
 import type { Review } from '@/lib/types';
 import SectionTitle from './SectionTitle';
-import { Star, Quote, ArrowRight } from 'lucide-react';
+import { Star, Quote, ArrowRight, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -22,7 +22,7 @@ export default function ReviewSection({ reviews, compact }: Props) {
       >
         <div className="flex items-center justify-between mb-8">
           <div>
-            <p className="text-[11px] tracking-[0.2em] uppercase text-gray-300 mb-1.5"
+            <p className="text-[11px] tracking-[0.2em] uppercase text-gray-400 mb-1.5"
               style={{ fontFamily: 'var(--font-accent)' }}>Reviews</p>
             <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">구매후기</h3>
           </div>
@@ -33,7 +33,10 @@ export default function ReviewSection({ reviews, compact }: Props) {
         </div>
         <div className="h-px bg-gray-200 mb-2" />
         {reviews.length === 0 ? (
-          <p className="py-16 text-center text-[14px] text-gray-300">등록된 후기가 없습니다</p>
+          <div className="py-16 flex flex-col items-center gap-3">
+            <MessageSquare size={28} className="text-gray-200" />
+            <p className="text-[14px] text-gray-300">등록된 후기가 없습니다</p>
+          </div>
         ) : (
           <div>
             {reviews.slice(0, 4).map((r) => (
@@ -62,7 +65,7 @@ export default function ReviewSection({ reviews, compact }: Props) {
                 <p className="text-[13px] text-gray-500 leading-relaxed line-clamp-2 group-hover:text-gray-700 transition-colors">
                   {r.text}
                 </p>
-                <p className="text-[11px] mt-1.5 text-gray-300">{r.date}</p>
+                <p className="text-[11px] mt-1.5 text-gray-400">{r.date}</p>
               </div>
             ))}
           </div>

@@ -41,7 +41,7 @@ const gates = [
 
 export default function GateSection() {
   return (
-    <section className="py-24 md:py-32 px-8">
+    <section className="py-24 md:py-32 px-8 bg-gradient-to-b from-brand-50/30 to-transparent">
       <div className="max-w-7xl mx-auto">
         {/* Section header */}
         <motion.div
@@ -83,7 +83,7 @@ export default function GateSection() {
               transition={{ duration: 0.6, delay: i * 0.1 }}
             >
               <Link href={gate.href} className="block group">
-                <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl p-8 md:p-10 lg:p-12 bg-white border border-gray-200/80 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-brand/[0.08] group-hover:-translate-y-1 group-hover:border-brand/20">
+                <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl p-8 md:p-10 lg:p-12 bg-white border border-gray-200/80 border-l-2 border-l-transparent transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-brand/[0.08] group-hover:-translate-y-1 group-hover:border-brand/20 group-hover:border-l-brand">
 
                   {/* Content */}
                   <div className="relative z-10">
@@ -111,7 +111,7 @@ export default function GateSection() {
 
                     {/* CTA */}
                     <div className="flex items-center gap-3">
-                      <span className="text-[13px] font-semibold text-gray-500 group-hover:text-brand transition-colors duration-300">
+                      <span className="text-[13px] font-semibold text-gray-500 px-4 py-1.5 rounded-full transition-all duration-300 group-hover:text-brand group-hover:bg-brand-50">
                         {gate.cta}
                       </span>
                       <div className="w-7 h-7 rounded-full flex items-center justify-center bg-gray-100 transition-all duration-300 group-hover:bg-brand group-hover:shadow-md group-hover:shadow-brand/20">
