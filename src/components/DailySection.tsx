@@ -2,13 +2,67 @@
 
 import type { DailyPost } from '@/lib/types';
 import SectionTitle from './SectionTitle';
-import { Camera, ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
+import { Camera, ArrowUpRight, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface Props {
   posts: DailyPost[];
+  compact?: boolean;
 }
 
-export default function DailySection({ posts }: Props) {
+export default function DailySection({ posts, compact }: Props) {
+  if (compact) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+      >
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <p className="text-[11px] tracking-[0.2em] uppercase text-gray-300 mb-1.5"
+              style={{ fontFamily: 'var(--font-accent)' }}>Daily</p>
+            <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">일상</h3>
+          </div>
+          <Link href="/main/daily" className="flex items-center gap-1.5 text-[13px] text-gray-400 hover:text-brand transition-colors group">
+            전체보기
+            <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
+        <div className="h-px bg-gray-200 mb-6" />
+        {posts.length === 0 ? (
+          <p className="py-16 text-center text-[14px] text-gray-300">등록된 일상 포스트가 없습니다</p>
+        ) : (
+          <div className="space-y-4">
+            {posts.slice(0, 4).map((post) => (
+              <div key={post.id}
+                className="en-tooltip flex items-center gap-4 cursor-pointer group"
+                data-en={post.title_en}
+              >
+                <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+                  {post.image_url ? (
+                    <img src={post.image_url} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Camera size={16} className="text-gray-300" />
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <span className="text-[11px] px-2 py-0.5 rounded bg-gray-100 text-gray-500 font-medium">{post.category}</span>
+                  <p className="text-[14px] text-gray-600 truncate mt-1.5 group-hover:text-gray-900 transition-colors">{post.title}</p>
+                  <p className="text-[11px] text-gray-300 mt-1">{post.date}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </motion.div>
+    );
+  }
+
   return (
     <section className="py-24 md:py-28 px-8" id="daily">
       <div className="max-w-7xl mx-auto">

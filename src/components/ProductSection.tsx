@@ -2,8 +2,10 @@
 
 import type { Product } from '@/lib/types';
 import SectionTitle from './SectionTitle';
-import { Sparkles, Star, ShoppingBag, Package, Pill, Lightbulb, Leaf, Flame, BarChart3, Mountain, Wrench, Droplets, Beef, Hammer } from 'lucide-react';
+import Link from 'next/link';
+import { Sparkles, Star, ShoppingBag, Package, Pill, Lightbulb, Leaf, Flame, BarChart3, Mountain, Wrench, Droplets, Beef, Hammer, ArrowRight } from 'lucide-react';
 import { ReactNode } from 'react';
+import { motion } from 'framer-motion';
 
 const categoryIcons: Record<string, ReactNode> = {
   supplement: <Pill size={36} />,
@@ -16,6 +18,19 @@ const categoryIcons: Record<string, ReactNode> = {
   humidity: <Droplets size={36} />,
   food: <Beef size={36} />,
   tool: <Hammer size={36} />,
+};
+
+const categoryIconsSmall: Record<string, ReactNode> = {
+  supplement: <Pill size={20} />,
+  lighting: <Lightbulb size={20} />,
+  substrate: <Leaf size={20} />,
+  heating: <Flame size={20} />,
+  monitoring: <BarChart3 size={20} />,
+  decor: <Mountain size={20} />,
+  accessory: <Wrench size={20} />,
+  humidity: <Droplets size={20} />,
+  food: <Beef size={20} />,
+  tool: <Hammer size={20} />,
 };
 
 function ProductCard({ product }: { product: Product }) {
@@ -54,9 +69,76 @@ function ProductCard({ product }: { product: Product }) {
   );
 }
 
+function CompactProductCard({ product }: { product: Product }) {
+  return (
+    <div className="en-tooltip group relative rounded-xl overflow-hidden card-hover cursor-pointer"
+      data-en={product.name_en}>
+      <div className="aspect-square relative overflow-hidden rounded-t-xl bg-gray-50">
+        {product.image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-gray-300">
+            {categoryIconsSmall[product.category || ''] || <Package size={20} />}
+          </div>
+        )}
+        {(product.badge || product.is_new) && (
+          <span className={`absolute top-2 right-2 text-[10px] px-2 py-1 rounded-md flex items-center gap-0.5 font-medium shadow-sm ${
+            product.badge === '베스트' ? 'bg-brand text-white' :
+            product.badge === '추천' ? 'bg-brand-700 text-white' :
+            product.is_new ? 'bg-white text-gray-800 border border-gray-200' :
+            'bg-gray-100 text-gray-600'
+          }`}>
+            {product.is_new ? <Sparkles size={9} /> : <Star size={9} />}
+            {product.badge || 'NEW'}
+          </span>
+        )}
+      </div>
+      <div className="p-3 bg-white rounded-b-xl border border-gray-100 border-t-0">
+        <p className="text-[13px] text-gray-600 group-hover:text-gray-900 transition-colors truncate">{product.name}</p>
+        <p className="text-[13px] font-bold mt-1.5 text-gray-900">{product.price}</p>
+      </div>
+    </div>
+  );
+}
+
 function EmptyProductState({ title }: { title: string }) {
   return (
     <p className="py-20 text-center text-[14px] text-gray-300">등록된 {title}이 없습니다</p>
+  );
+}
+
+/* Compact single-column product section for 2-col grid layout */
+export function CompactProductColumn({ products, ko, en, delay = 0 }: { products: Product[]; ko: string; en: string; delay?: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.6, delay }}
+    >
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <p className="text-[11px] tracking-[0.2em] uppercase text-gray-300 mb-1.5"
+            style={{ fontFamily: 'var(--font-accent)' }}>{en}</p>
+          <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">{ko}</h3>
+        </div>
+        <Link href="/main/products" className="flex items-center gap-1.5 text-[13px] text-gray-400 hover:text-brand transition-colors group">
+          전체보기
+          <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+        </Link>
+      </div>
+      <div className="h-px bg-gray-200 mb-6" />
+      {products.length === 0 ? (
+        <p className="py-16 text-center text-[14px] text-gray-300">등록된 {ko}이 없습니다</p>
+      ) : (
+        <div className="grid grid-cols-2 gap-4">
+          {products.slice(0, 4).map((p) => (
+            <CompactProductCard key={p.id} product={p} />
+          ))}
+        </div>
+      )}
+    </motion.div>
   );
 }
 

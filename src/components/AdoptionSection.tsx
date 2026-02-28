@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { PawPrint, ArrowRight } from 'lucide-react';
 
-function AdoptionCard({ animal, index }: { animal: Adoption; index: number }) {
+function AdoptionCard({ animal, index, compact }: { animal: Adoption; index: number; compact?: boolean }) {
   return (
     <Link href={`/main/adoption/${animal.id}`} className="block group">
       <motion.div
@@ -14,9 +14,9 @@ function AdoptionCard({ animal, index }: { animal: Adoption; index: number }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.5, delay: index * 0.08 }}
-        className="overflow-hidden rounded-2xl lg:rounded-3xl bg-white subtle-border card-hover"
+        className={`overflow-hidden bg-white subtle-border card-hover ${compact ? 'rounded-xl' : 'rounded-2xl lg:rounded-3xl'}`}
       >
-        <div className="aspect-[4/5] relative overflow-hidden bg-gray-100">
+        <div className={`relative overflow-hidden bg-gray-100 ${compact ? 'aspect-square' : 'aspect-[4/5]'}`}>
           {animal.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -26,34 +26,37 @@ function AdoptionCard({ animal, index }: { animal: Adoption; index: number }) {
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-white/80">
-                <PawPrint size={28} className="text-gray-200" />
+              <div className={`${compact ? 'w-10 h-10 rounded-xl' : 'w-14 h-14 rounded-2xl'} flex items-center justify-center bg-white/80`}>
+                <PawPrint size={compact ? 20 : 28} className="text-gray-200" />
               </div>
             </div>
           )}
-          <div className="absolute top-3 right-3">
-            <span className="text-[11px] px-3 py-1.5 rounded-xl font-semibold backdrop-blur-md bg-green-500/90 text-white shadow-lg shadow-green-500/25">
+          <div className={`absolute ${compact ? 'top-2 right-2' : 'top-3 right-3'}`}>
+            <span className={`font-semibold backdrop-blur-md bg-green-500/90 text-white shadow-lg shadow-green-500/25 ${compact ? 'text-[10px] px-2 py-1 rounded-lg' : 'text-[11px] px-3 py-1.5 rounded-xl'}`}>
               분양 가능
             </span>
           </div>
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
-            <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-white/90">
-              상세 보기 <ArrowRight size={12} />
-            </span>
-          </div>
+          {!compact && (
+            <>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
+                <span className="inline-flex items-center gap-1.5 text-[12px] font-medium text-white/90">
+                  상세 보기 <ArrowRight size={12} />
+                </span>
+              </div>
+            </>
+          )}
         </div>
-        <div className="p-5 md:p-6">
-          <h3 className="text-[15px] font-display font-bold text-gray-900 mb-1 group-hover:text-brand transition-colors duration-300">
+        <div className={compact ? 'p-3.5' : 'p-5 md:p-6'}>
+          <h3 className={`font-display font-bold text-gray-900 group-hover:text-brand transition-colors duration-300 ${compact ? 'text-[13px] mb-0.5' : 'text-[15px] mb-1'}`}>
             {animal.name}
           </h3>
-          <p className="text-[13px] text-gray-400 mb-2.5">
+          <p className={`text-gray-400 ${compact ? 'text-[12px] mb-1.5' : 'text-[13px] mb-2.5'}`}>
             {animal.species}
             {animal.morph ? ` · ${animal.morph}` : ''}
           </p>
           {animal.price && (
-            <p className="text-[15px] font-bold text-brand">{animal.price}</p>
+            <p className={`font-bold text-brand ${compact ? 'text-[13px]' : 'text-[15px]'}`}>{animal.price}</p>
           )}
         </div>
       </motion.div>
@@ -63,9 +66,43 @@ function AdoptionCard({ animal, index }: { animal: Adoption; index: number }) {
 
 interface Props {
   adoptions: Adoption[];
+  compact?: boolean;
 }
 
-export default function AdoptionSection({ adoptions }: Props) {
+export default function AdoptionSection({ adoptions, compact }: Props) {
+  if (compact) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-40px' }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <p className="text-[11px] tracking-[0.2em] uppercase text-gray-300 mb-1.5"
+              style={{ fontFamily: 'var(--font-accent)' }}>Available Tegus</p>
+            <h3 className="text-xl md:text-2xl font-display font-bold text-gray-900">분양 중인 개체</h3>
+          </div>
+          <Link href="/main/adoption" className="flex items-center gap-1.5 text-[13px] text-gray-400 hover:text-brand transition-colors group">
+            전체보기
+            <ArrowRight size={13} className="group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+        </div>
+        <div className="h-px bg-gray-200 mb-6" />
+        {adoptions.length === 0 ? (
+          <p className="py-16 text-center text-[14px] text-gray-300">등록된 개체가 없습니다</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            {adoptions.slice(0, 4).map((a, i) => (
+              <AdoptionCard key={a.id} animal={a} index={i} compact />
+            ))}
+          </div>
+        )}
+      </motion.div>
+    );
+  }
+
   return (
     <section className="py-24 md:py-28 px-8" id="adoption">
       <div className="max-w-6xl mx-auto">
