@@ -10,8 +10,6 @@ interface Props {
 }
 
 export default function ReviewSection({ reviews }: Props) {
-  if (reviews.length === 0) return null;
-
   return (
     <section className="py-24 md:py-28 px-8" id="reviews">
       <div className="max-w-7xl mx-auto">

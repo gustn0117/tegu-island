@@ -66,8 +66,6 @@ interface Props {
 }
 
 export default function AdoptionSection({ adoptions }: Props) {
-  if (adoptions.length === 0) return null;
-
   return (
     <section className="py-24 md:py-28 px-8" id="adoption">
       <div className="max-w-6xl mx-auto">
