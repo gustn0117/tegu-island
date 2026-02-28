@@ -9,6 +9,8 @@ interface Props {
 }
 
 export default function DailySection({ posts }: Props) {
+  if (posts.length === 0) return null;
+
   return (
     <section className="py-24 md:py-28 px-8" id="daily">
       <div className="max-w-7xl mx-auto">

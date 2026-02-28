@@ -67,6 +67,8 @@ interface Props {
 }
 
 export default function ProductSection({ featuredProducts, newProducts, supplies }: Props) {
+  if (featuredProducts.length === 0 && newProducts.length === 0 && supplies.length === 0) return null;
+
   return (
     <>
       <section className="py-24 md:py-28 px-8" id="featured">

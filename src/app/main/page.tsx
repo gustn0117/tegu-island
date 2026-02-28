@@ -33,6 +33,21 @@ export default async function MainPage() {
     supabase.from('reviews').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(4),
   ]);
 
+  const noticeList = (notices as Notice[]) || [];
+  const careSheetList = (careSheets as CareSheet[]) || [];
+  const adoptionList = (adoptions as Adoption[]) || [];
+  const dailyList = (dailyPosts as DailyPost[]) || [];
+  const featured = (featuredProducts as Product[]) || [];
+  const newItems = (newProducts as Product[]) || [];
+  const supplyList = (supplies as Product[]) || [];
+  const reviewList = (reviews as Review[]) || [];
+
+  const hasNotices = noticeList.length > 0 || careSheetList.length > 0;
+  const hasAdoptions = adoptionList.length > 0;
+  const hasDaily = dailyList.length > 0;
+  const hasProducts = featured.length > 0 || newItems.length > 0 || supplyList.length > 0;
+  const hasReviews = reviewList.length > 0;
+
   return (
     <>
       <HeroBanner slides={(bannerSlides as BannerSlide[]) || []} />
@@ -40,24 +55,11 @@ export default async function MainPage() {
       <div className="section-divider" />
       <GateSection />
 
-      <div className="section-divider" />
-      <NoticeSection notices={(notices as Notice[]) || []} careSheets={(careSheets as CareSheet[]) || []} />
-
-      <div className="section-divider" />
-      <AdoptionSection adoptions={(adoptions as Adoption[]) || []} />
-
-      <div className="section-divider" />
-      <DailySection posts={(dailyPosts as DailyPost[]) || []} />
-
-      <div className="section-divider" />
-      <ProductSection
-        featuredProducts={(featuredProducts as Product[]) || []}
-        newProducts={(newProducts as Product[]) || []}
-        supplies={(supplies as Product[]) || []}
-      />
-
-      <div className="section-divider" />
-      <ReviewSection reviews={(reviews as Review[]) || []} />
+      {hasNotices && <><div className="section-divider" /><NoticeSection notices={noticeList} careSheets={careSheetList} /></>}
+      {hasAdoptions && <><div className="section-divider" /><AdoptionSection adoptions={adoptionList} /></>}
+      {hasDaily && <><div className="section-divider" /><DailySection posts={dailyList} /></>}
+      {hasProducts && <><div className="section-divider" /><ProductSection featuredProducts={featured} newProducts={newItems} supplies={supplyList} /></>}
+      {hasReviews && <><div className="section-divider" /><ReviewSection reviews={reviewList} /></>}
     </>
   );
 }

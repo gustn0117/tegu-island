@@ -11,6 +11,8 @@ interface Props {
 }
 
 export default function NoticeSection({ notices, careSheets }: Props) {
+  if (notices.length === 0 && careSheets.length === 0) return null;
+
   return (
     <section className="py-24 md:py-32 px-8">
       <div className="max-w-7xl mx-auto">
