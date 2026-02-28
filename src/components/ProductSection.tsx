@@ -56,13 +56,7 @@ function ProductCard({ product }: { product: Product }) {
 
 function EmptyProductState({ title }: { title: string }) {
   return (
-    <div className="py-20 text-center rounded-2xl bg-white subtle-border">
-      <div className="w-20 h-20 rounded-xl mx-auto mb-4 flex items-center justify-center bg-gray-50">
-        <Package size={32} className="text-gray-200" />
-      </div>
-      <p className="text-base text-gray-400">등록된 {title}이 없습니다</p>
-      <p className="text-[12px] mt-2 text-gray-300">관리자 페이지에서 상품을 추가해보세요</p>
-    </div>
+    <p className="py-20 text-center text-[14px] text-gray-300">등록된 {title}이 없습니다</p>
   );
 }
 

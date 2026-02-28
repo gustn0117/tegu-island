@@ -2,7 +2,7 @@
 
 import type { DailyPost } from '@/lib/types';
 import SectionTitle from './SectionTitle';
-import { Camera, ArrowUpRight, ImageIcon } from 'lucide-react';
+import { Camera, ArrowUpRight } from 'lucide-react';
 
 interface Props {
   posts: DailyPost[];
@@ -19,13 +19,7 @@ export default function DailySection({ posts }: Props) {
           subEn="Live updates from our ecological exhibition and breeding"
         />
         {posts.length === 0 ? (
-          <div className="py-20 text-center rounded-2xl bg-white subtle-border">
-            <div className="w-20 h-20 rounded-xl mx-auto mb-4 flex items-center justify-center bg-gray-50">
-              <ImageIcon size={32} className="text-gray-200" />
-            </div>
-            <p className="text-base text-gray-400">등록된 일상 포스트가 없습니다</p>
-            <p className="text-[12px] mt-2 text-gray-300">관리자 페이지에서 일상 포스트를 추가해보세요</p>
-          </div>
+          <p className="py-20 text-center text-[14px] text-gray-300">등록된 일상 포스트가 없습니다</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
             {posts.map((post, idx) => (

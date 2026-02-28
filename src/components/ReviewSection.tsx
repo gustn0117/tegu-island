@@ -2,7 +2,7 @@
 
 import type { Review } from '@/lib/types';
 import SectionTitle from './SectionTitle';
-import { Star, Quote, ArrowRight, MessageSquare } from 'lucide-react';
+import { Star, Quote, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 interface Props {
@@ -20,13 +20,7 @@ export default function ReviewSection({ reviews }: Props) {
           subEn="Reviews from exhibition visitors, adopters, and supply customers"
         />
         {reviews.length === 0 ? (
-          <div className="py-20 text-center rounded-2xl bg-white subtle-border">
-            <div className="w-20 h-20 rounded-xl mx-auto mb-4 flex items-center justify-center bg-gray-50">
-              <MessageSquare size={32} className="text-gray-200" />
-            </div>
-            <p className="text-base text-gray-400">등록된 후기가 없습니다</p>
-            <p className="text-[12px] mt-2 text-gray-300">첫 번째 후기를 기다리고 있습니다</p>
-          </div>
+          <p className="py-20 text-center text-[14px] text-gray-300">등록된 후기가 없습니다</p>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

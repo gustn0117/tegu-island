@@ -77,12 +77,7 @@ export default function AdoptionSection({ adoptions }: Props) {
         />
 
         {adoptions.length === 0 ? (
-          <div className="py-24 text-center rounded-2xl lg:rounded-3xl bg-white subtle-border">
-            <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center bg-gray-50">
-              <PawPrint size={28} className="text-gray-200" />
-            </div>
-            <p className="text-base text-gray-400">등록된 개체가 없습니다</p>
-          </div>
+          <p className="py-20 text-center text-[14px] text-gray-300">등록된 개체가 없습니다</p>
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
