@@ -106,7 +106,7 @@ export default function EducationPage() {
 
   const inputClass = 'w-full px-5 py-4 rounded-2xl bg-white text-sm text-gray-800 placeholder-gray-300 focus:outline-none transition-all duration-300 border border-gray-200 focus:border-brand/40 focus:ring-2 focus:ring-brand/10';
 
-  const upcomingMonths = useMemo(() => getUpcomingMonths(6), []);
+  const upcomingMonths = useMemo(() => getUpcomingMonths(24), []);
 
   const selectedMonthData = upcomingMonths.find((m) => m.value === selectedMonth);
   const calendarDays = useMemo(() => {

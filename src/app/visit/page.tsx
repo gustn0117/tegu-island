@@ -68,13 +68,7 @@ export default function VisitPage() {
     }
   }, [viewYear, viewMonth]);
 
-  const maxMonth = useMemo(() => {
-    const d = new Date();
-    d.setMonth(d.getMonth() + 3);
-    return { year: d.getFullYear(), month: d.getMonth() + 1 };
-  }, []);
-
-  const canGoNext = viewYear < maxMonth.year || (viewYear === maxMonth.year && viewMonth < maxMonth.month);
+  const canGoNext = true;
   const canGoPrev = (() => {
     const now = new Date();
     return viewYear > now.getFullYear() || (viewYear === now.getFullYear() && viewMonth > now.getMonth() + 1);
