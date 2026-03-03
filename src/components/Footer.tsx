@@ -38,8 +38,9 @@ export default function Footer() {
                 { ko: '일상', href: '/main/daily' },
                 { ko: '사육용품', href: '/main/products' },
                 { ko: '케어가이드', href: '/care-guide' },
-                { ko: '교육 신청', href: '/education' },
-                { ko: '방문예약', href: '/booking' },
+                { ko: '방문예약', href: '/visit' },
+                { ko: '생태전시관람예약', href: '/booking' },
+                { ko: '교육프로그램', href: '/education' },
                 { ko: '수출(TEIU KOREA)', href: '/export' },
                 { ko: '후기', href: '/reviews' },
               ].map((item) => (

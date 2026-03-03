@@ -1,10 +1,31 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CheckCircle, GraduationCap, ArrowRight, Calendar } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { CheckCircle, GraduationCap, ArrowRight, Calendar, TreePine, Home, FileText, Upload } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const PROGRAM_TYPES = [
+  {
+    value: 'indoor',
+    label: '실내 프로그램',
+    labelEn: 'Indoor Program',
+    desc: '실내 교육 공간에서 진행되는 프로그램입니다.\n생태 관찰, 브리딩 과학, 사육 이론 등을 학습합니다.',
+    icon: <Home size={28} />,
+    image: '/images/education-indoor.jpg',
+    fallbackGradient: 'from-amber-100 to-orange-50',
+  },
+  {
+    value: 'outdoor',
+    label: '실외 프로그램',
+    labelEn: 'Outdoor Program',
+    desc: '야외 생태 환경에서 진행되는 체험형 프로그램입니다.\n자연 서식지 탐구, 생태 보호 활동을 체험합니다.',
+    icon: <TreePine size={28} />,
+    image: '/images/education-outdoor.jpg',
+    fallbackGradient: 'from-green-100 to-emerald-50',
+  },
+];
 
 const ORG_TYPES = [
   { value: 'school', label: '학교 (초·중·고)', desc: '초등학교, 중학교, 고등학교' },
@@ -71,10 +92,14 @@ function SectionHeader({ num, title, desc, delay = 0 }: { num: string; title: st
 
 export default function EducationPage() {
   const [form, setForm] = useState({
+    program_type: '',
     org_name: '', org_type: '', org_type_custom: '',
     contact_name: '', phone: '', email: '',
     participants: '', preferred_date: '', message: '',
   });
+  const [hoveredProgram, setHoveredProgram] = useState<string | null>(null);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -105,12 +130,21 @@ export default function EducationPage() {
   }, [selectedMonthData]);
 
   const orgTypeValid = form.org_type && (form.org_type !== 'other' || form.org_type_custom);
-  const canSubmit = form.org_name && orgTypeValid && form.contact_name && form.phone;
+  const canSubmit = form.program_type && form.org_name && orgTypeValid && form.contact_name && form.phone;
 
   const handleSubmit = async () => {
     if (!canSubmit || submitting) return;
     setSubmitting(true);
     try {
+      const formData = new FormData();
+      formData.append('data', JSON.stringify({
+        ...form,
+        org_type: form.org_type === 'other' ? form.org_type_custom : form.org_type,
+      }));
+      if (pdfFile) {
+        formData.append('pdf', pdfFile);
+      }
+
       const res = await fetch('/api/education', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -127,6 +161,9 @@ export default function EducationPage() {
   const handleDateSelect = (dateValue: string) => {
     setForm({ ...form, preferred_date: form.preferred_date === dateValue ? '' : dateValue });
   };
+
+  // Current display image based on hover or selection
+  const activeProgram = hoveredProgram || form.program_type;
 
   return (
     <>
@@ -177,9 +214,187 @@ export default function EducationPage() {
             </motion.div>
           ) : (
             <div>
+              {/* Program Type Selector */}
+              <section className="pb-16 border-b border-gray-100">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="mb-8"
+                >
+                  <p className="text-[12px] font-bold text-brand/40 tracking-widest mb-3"
+                    style={{ fontFamily: 'var(--font-accent)' }}>
+                    PROGRAM
+                  </p>
+                  <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 leading-snug">
+                    프로그램 선택
+                  </h2>
+                  <p className="text-[14px] text-gray-400 mt-2 leading-relaxed">원하시는 교육 프로그램 유형을 선택해주세요.</p>
+                </motion.div>
+
+                {/* Program image preview area */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.05 }}
+                  className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 bg-gray-100"
+                >
+                  <AnimatePresence mode="wait">
+                    {activeProgram ? (
+                      <motion.div
+                        key={activeProgram}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="absolute inset-0"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={PROGRAM_TYPES.find(p => p.value === activeProgram)?.image || ''}
+                          alt={PROGRAM_TYPES.find(p => p.value === activeProgram)?.label || ''}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                          }}
+                        />
+                        <div className={`absolute inset-0 bg-gradient-to-br ${PROGRAM_TYPES.find(p => p.value === activeProgram)?.fallbackGradient || ''}`} style={{ zIndex: -1 }} />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                        <div className="absolute bottom-6 left-6 right-6">
+                          <p className="text-[11px] tracking-[0.2em] uppercase text-white/50 mb-1.5"
+                            style={{ fontFamily: 'var(--font-accent)' }}>
+                            {PROGRAM_TYPES.find(p => p.value === activeProgram)?.labelEn}
+                          </p>
+                          <p className="text-xl font-display font-bold text-white">
+                            {PROGRAM_TYPES.find(p => p.value === activeProgram)?.label}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="placeholder"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100"
+                      >
+                        <GraduationCap size={40} className="text-gray-200 mb-3" />
+                        <p className="text-[14px] text-gray-300">프로그램을 선택해주세요</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+
+                {/* Program cards */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="grid grid-cols-2 gap-4"
+                >
+                  {PROGRAM_TYPES.map((program) => (
+                    <button
+                      key={program.value}
+                      type="button"
+                      onClick={() => setForm({ ...form, program_type: program.value })}
+                      onMouseEnter={() => setHoveredProgram(program.value)}
+                      onMouseLeave={() => setHoveredProgram(null)}
+                      className={`relative overflow-hidden rounded-2xl border text-left transition-all duration-300 p-5 md:p-6 ${
+                        form.program_type === program.value
+                          ? 'border-brand bg-brand/[0.02] shadow-md shadow-brand/10'
+                          : 'border-gray-200 hover:border-gray-300 bg-white hover:shadow-sm'
+                      }`}
+                    >
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 ${
+                        form.program_type === program.value
+                          ? 'bg-brand text-white'
+                          : 'bg-gray-50 text-gray-400'
+                      }`}>
+                        {program.icon}
+                      </div>
+                      <h3 className={`text-[15px] font-bold mb-1 transition-colors duration-300 ${
+                        form.program_type === program.value ? 'text-gray-900' : 'text-gray-700'
+                      }`}>
+                        {program.label}
+                      </h3>
+                      <p className="text-[11px] tracking-[0.1em] uppercase text-gray-300 mb-3"
+                        style={{ fontFamily: 'var(--font-accent)' }}>
+                        {program.labelEn}
+                      </p>
+                      <p className="text-[12px] text-gray-400 leading-relaxed whitespace-pre-line">
+                        {program.desc}
+                      </p>
+                      {/* Selection indicator */}
+                      <div className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        form.program_type === program.value ? 'bg-brand' : 'border-2 border-gray-200'
+                      }`}>
+                        {form.program_type === program.value && (
+                          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <path d="M2 6L5 9L10 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </motion.div>
+
+                {/* PDF Attachment */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.15 }}
+                  className="mt-6"
+                >
+                  <p className="text-[13px] font-medium text-gray-500 mb-3 flex items-center gap-2">
+                    <FileText size={14} className="text-gray-400" />
+                    첨부파일 (선택)
+                  </p>
+                  <input
+                    ref={pdfInputRef}
+                    type="file"
+                    accept=".pdf"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) setPdfFile(file);
+                      e.target.value = '';
+                    }}
+                  />
+                  {pdfFile ? (
+                    <div className="flex items-center justify-between px-5 py-4 rounded-2xl border border-brand/20 bg-brand/[0.02]">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+                          <FileText size={18} className="text-red-400" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[13px] font-medium text-gray-700 truncate">{pdfFile.name}</p>
+                          <p className="text-[11px] text-gray-400">{(pdfFile.size / 1024 / 1024).toFixed(1)} MB</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setPdfFile(null)}
+                        className="text-[12px] text-gray-400 hover:text-red-500 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => pdfInputRef.current?.click()}
+                      className="w-full flex items-center justify-center gap-2.5 px-5 py-4 rounded-2xl border-2 border-dashed border-gray-200 hover:border-brand/40 text-gray-400 hover:text-brand/60 transition-all duration-300 hover:bg-brand-50/20"
+                    >
+                      <Upload size={16} />
+                      <span className="text-[13px]">PDF 파일 첨부하기</span>
+                    </button>
+                  )}
+                  <p className="text-[11px] text-gray-300 mt-2">교육 관련 자료가 있으면 PDF로 첨부해주세요. (최대 10MB)</p>
+                </motion.div>
+              </section>
 
               {/* Section 1: 기관 유형 */}
-              <section className="pb-16 border-b border-gray-100">
+              <section className="py-16 border-b border-gray-100">
                 <SectionHeader num="01" title="기관 유형" desc="어떤 기관에서 신청하시나요?" delay={0.1} />
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}
                   className="space-y-3">
@@ -416,7 +631,7 @@ export default function EducationPage() {
 
                 {!canSubmit && (
                   <p className="text-center text-[12px] text-gray-300">
-                    기관 유형, 기관명, 담당자 이름, 연락처는 필수 항목입니다.
+                    프로그램 유형, 기관 유형, 기관명, 담당자 이름, 연락처는 필수 항목입니다.
                   </p>
                 )}
               </motion.section>

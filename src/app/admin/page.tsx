@@ -20,6 +20,7 @@ const TABLES = [
   { key: 'tegu_species', label: '보유 개체', labelEn: 'Assets', desc: 'OUR ASSETS 페이지·수출 페이지', page: '/main/assets, /export' },
   { key: 'adoptions', label: '분양 개체', labelEn: 'Adoptions', desc: '홈·분양 게시판·상세 페이지', page: '/main, /main/adoption' },
   { key: 'edu_applications', label: '교육 신청', labelEn: 'Education', desc: '교육 신청 접수 내역 (읽기)', page: '/education' },
+  { key: 'visit_reservations', label: '방문예약', labelEn: 'Visits', desc: '농장 방문예약 접수 내역', page: '/visit' },
 ];
 
 const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; placeholder?: string }[]> = {
@@ -125,6 +126,15 @@ const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; 
     { key: 'message', label: '메시지', type: 'textarea', placeholder: '추가 요청 사항' },
     { key: 'status', label: '상태', type: 'select', placeholder: 'pending' },
   ],
+  visit_reservations: [
+    { key: 'name', label: '이름', placeholder: '예약자 이름' },
+    { key: 'phone', label: '연락처', placeholder: '010-0000-0000' },
+    { key: 'visitors', label: '인원수', type: 'number' },
+    { key: 'visit_date', label: '방문일', placeholder: '2026-03-15' },
+    { key: 'visit_time', label: '시간', placeholder: '10:00' },
+    { key: 'message', label: '메시지', type: 'textarea', placeholder: '추가 요청 사항' },
+    { key: 'status', label: '상태', type: 'select', placeholder: 'pending' },
+  ],
 };
 
 const TABLE_DISPLAY_COLS: Record<string, string[]> = {
@@ -137,6 +147,7 @@ const TABLE_DISPLAY_COLS: Record<string, string[]> = {
   tegu_species: ['id', 'image_url', 'name', 'scientific', 'status', 'sort_order', 'is_active'],
   adoptions: ['id', 'image_url', 'name', 'species', 'status', 'sort_order', 'is_active'],
   edu_applications: ['id', 'org_name', 'org_type', 'contact_name', 'phone', 'status'],
+  visit_reservations: ['id', 'name', 'phone', 'visitors', 'visit_date', 'visit_time', 'status'],
 };
 
 const PRODUCT_TYPES = [
@@ -157,6 +168,14 @@ const EDU_STATUSES = [
   { value: 'cancelled', label: '취소' },
 ];
 
+const VISIT_STATUSES = [
+  { value: 'pending', label: '대기중' },
+  { value: 'confirmed', label: '확정' },
+  { value: 'completed', label: '방문완료' },
+  { value: 'cancelled', label: '취소' },
+  { value: 'no_show', label: '미방문' },
+];
+
 const ORG_TYPES = [
   { value: 'school', label: '학교' },
   { value: 'government', label: '관공서' },
@@ -171,6 +190,7 @@ const COL_LABELS: Record<string, string> = {
   type: '유형', species: '종', scientific: '학명', status: '상태', morph: '모프',
   org_name: '기관명', org_type: '유형', contact_name: '담당자', phone: '연락처',
   content: '내용', participants: '인원', email: '이메일', preferred_date: '희망날짜',
+  visitors: '인원', visit_date: '방문일', visit_time: '시간', message: '메시지',
 };
 
 type RecordData = Record<string, unknown>;
@@ -294,6 +314,7 @@ export default function AdminPage() {
     if (activeTab === 'products') newItem.product_type = 'featured';
     if (activeTab === 'adoptions') { newItem.status = 'Active'; newItem.status_en = 'Active'; }
     if (activeTab === 'edu_applications') { newItem.status = 'pending'; newItem.org_type = 'school'; }
+    if (activeTab === 'visit_reservations') { newItem.status = 'pending'; }
     if (['notices', 'daily_posts', 'reviews'].includes(activeTab)) newItem.date = new Date().toISOString().split('T')[0];
     setEditItem(newItem); setIsNew(true);
   };
@@ -600,6 +621,7 @@ export default function AdminPage() {
                         activeTab === 'adoptions' && field.key === 'status' ? ADOPTION_STATUSES :
                         activeTab === 'edu_applications' && field.key === 'status' ? EDU_STATUSES :
                         activeTab === 'edu_applications' && field.key === 'org_type' ? ORG_TYPES :
+                        activeTab === 'visit_reservations' && field.key === 'status' ? VISIT_STATUSES :
                         PRODUCT_TYPES
                       }
                       value={String(editItem[field.key] ?? '')}

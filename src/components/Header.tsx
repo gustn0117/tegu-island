@@ -47,8 +47,9 @@ const navGroups: NavGroup[] = [
   {
     ko: '프로그램', en: 'Programs',
     children: [
-      { ko: '교육 신청', en: 'Education', href: '/education' },
-      { ko: '방문예약', en: 'Reservation', href: '/booking' },
+      { ko: '방문예약', en: 'Visit Reservation', href: '/visit' },
+      { ko: '생태전시관람예약', en: 'Exhibition', href: '/booking' },
+      { ko: '교육프로그램', en: 'Education', href: '/education' },
     ],
   },
   { ko: '수출', en: 'Export', href: '/export' },

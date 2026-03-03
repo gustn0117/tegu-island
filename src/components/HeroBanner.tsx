@@ -73,7 +73,7 @@ export default function HeroBanner({ slides }: Props) {
               Asia&apos;s Only Specialized Tegu Ecological Exhibition · Line Breeding · Education Center
             </p>
             <div className="flex flex-wrap gap-3">
-              <Link href="/booking"
+              <Link href="/visit"
                 className="btn-primary px-10 py-4 text-[15px] tracking-wider rounded-full">
                 방문예약
               </Link>

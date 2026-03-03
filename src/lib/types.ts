@@ -136,3 +136,16 @@ export interface EduApplication {
   created_at: string;
   updated_at: string;
 }
+
+export interface VisitReservation {
+  id: number;
+  name: string;
+  phone: string;
+  visitors: number | null;
+  visit_date: string;
+  visit_time: string;
+  message: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
