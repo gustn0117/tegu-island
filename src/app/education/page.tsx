@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useCallback } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CheckCircle, GraduationCap, ArrowRight, Calendar, TreePine, Home, FileText, Upload } from 'lucide-react';
+import { CheckCircle, GraduationCap, ArrowRight, Calendar, ChevronLeft, ChevronRight, TreePine, Home, FileText, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const PROGRAM_TYPES = [
@@ -41,24 +41,6 @@ const PARTICIPANT_OPTIONS = [
   { value: '50', label: '31 ~ 50명' },
   { value: '100', label: '50명 이상' },
 ];
-
-function getUpcomingMonths(count: number) {
-  const months: { value: string; label: string; monthLabel: string; year: number; month: number }[] = [];
-  const now = new Date();
-  for (let i = 1; i <= count; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
-    const year = d.getFullYear();
-    const month = d.getMonth() + 1;
-    months.push({
-      value: `${year}-${String(month).padStart(2, '0')}`,
-      label: `${month}월`,
-      monthLabel: `${year}년 ${month}월`,
-      year,
-      month,
-    });
-  }
-  return months;
-}
 
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month, 0).getDate();
@@ -100,34 +82,47 @@ export default function EducationPage() {
   const [hoveredProgram, setHoveredProgram] = useState<string | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  const today = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }, []);
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth() + 1);
+
+  const goNextMonth = useCallback(() => {
+    if (viewMonth === 12) { setViewYear(viewYear + 1); setViewMonth(1); }
+    else setViewMonth(viewMonth + 1);
+  }, [viewYear, viewMonth]);
+
+  const goPrevMonth = useCallback(() => {
+    const now = new Date();
+    if (viewYear === now.getFullYear() && viewMonth <= now.getMonth() + 1) return;
+    if (viewMonth === 1) { setViewYear(viewYear - 1); setViewMonth(12); }
+    else setViewMonth(viewMonth - 1);
+  }, [viewYear, viewMonth]);
+
+  const canGoPrev = (() => {
+    const now = new Date();
+    return viewYear > now.getFullYear() || (viewYear === now.getFullYear() && viewMonth > now.getMonth() + 1);
+  })();
+
   const inputClass = 'w-full px-5 py-4 rounded-2xl bg-white text-sm text-gray-800 placeholder-gray-300 focus:outline-none transition-all duration-300 border border-gray-200 focus:border-brand/40 focus:ring-2 focus:ring-brand/10';
 
-  const upcomingMonths = useMemo(() => getUpcomingMonths(24), []);
-
-  const selectedMonthData = upcomingMonths.find((m) => m.value === selectedMonth);
   const calendarDays = useMemo(() => {
-    if (!selectedMonthData) return null;
-    const { year, month } = selectedMonthData;
-    const daysInMonth = getDaysInMonth(year, month);
-    const firstDay = getFirstDayOfWeek(year, month);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const daysInMonth = getDaysInMonth(viewYear, viewMonth);
+    const firstDay = getFirstDayOfWeek(viewYear, viewMonth);
 
     const blanks = Array.from({ length: firstDay }, () => null);
     const days = Array.from({ length: daysInMonth }, (_, i) => {
       const day = i + 1;
-      const date = new Date(year, month - 1, day);
+      const date = new Date(viewYear, viewMonth - 1, day);
       const isPast = date < today;
       const isSunday = date.getDay() === 0;
-      return { day, value: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`, isPast, isSunday };
+      return { day, value: `${viewYear}-${String(viewMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`, isPast, isSunday };
     });
 
     return { blanks, days };
-  }, [selectedMonthData]);
+  }, [viewYear, viewMonth, today]);
 
   const orgTypeValid = form.org_type && (form.org_type !== 'other' || form.org_type_custom);
   const canSubmit = form.program_type && form.org_name && orgTypeValid && form.contact_name && form.phone;
@@ -499,92 +494,74 @@ export default function EducationPage() {
               <section className="py-16 border-b border-gray-100">
                 <SectionHeader num="05" title="희망 날짜" desc="교육을 원하시는 날짜를 선택해주세요. (선택)" delay={0.3} />
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}>
-                  {/* Month selector */}
-                  <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-                    {upcomingMonths.map((m) => (
+                  <div className="p-5 md:p-6 rounded-2xl border border-gray-100 bg-white">
+                    {/* Month navigation */}
+                    <div className="flex items-center justify-between mb-5">
                       <button
-                        key={m.value}
-                        type="button"
-                        onClick={() => {
-                          setSelectedMonth(selectedMonth === m.value ? '' : m.value);
-                          setForm({ ...form, preferred_date: '' });
-                        }}
-                        className={`shrink-0 px-5 py-3 rounded-2xl border text-center transition-all duration-300 ${
-                          selectedMonth === m.value
-                            ? 'border-brand bg-brand text-white font-medium shadow-lg shadow-brand/20'
-                            : 'border-gray-200 text-gray-500 hover:border-gray-300 bg-white'
-                        }`}
+                        onClick={goPrevMonth}
+                        disabled={!canGoPrev}
+                        className="w-9 h-9 rounded-full flex items-center justify-center border border-gray-200 text-gray-400 hover:border-brand hover:text-brand transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                       >
-                        <p className={`text-[18px] font-bold ${selectedMonth === m.value ? 'text-white' : 'text-gray-800'}`}>
-                          {m.label}
-                        </p>
-                        <p className={`text-[11px] mt-0.5 ${selectedMonth === m.value ? 'text-white/70' : 'text-gray-400'}`}>
-                          {m.year}
-                        </p>
+                        <ChevronLeft size={16} />
                       </button>
-                    ))}
-                  </div>
-
-                  {/* Calendar grid */}
-                  {calendarDays && selectedMonthData && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="mt-6 p-5 md:p-6 rounded-2xl border border-gray-100 bg-white"
-                    >
-                      <div className="flex items-center gap-2 mb-5">
+                      <div className="flex items-center gap-2">
                         <Calendar size={16} className="text-brand" />
-                        <p className="text-[14px] font-semibold text-gray-700">
-                          {selectedMonthData.monthLabel}
+                        <p className="text-[15px] font-semibold text-gray-700">
+                          {viewYear}년 {viewMonth}월
                         </p>
                       </div>
-                      {/* Weekday headers */}
-                      <div className="grid grid-cols-7 mb-2">
-                        {WEEKDAYS.map((w, i) => (
-                          <div key={w} className={`text-center text-[11px] font-medium py-1 ${
-                            i === 0 ? 'text-red-300' : 'text-gray-400'
-                          }`}>
-                            {w}
-                          </div>
-                        ))}
-                      </div>
-                      {/* Day cells */}
-                      <div className="grid grid-cols-7 gap-1">
-                        {calendarDays.blanks.map((_, i) => (
-                          <div key={`blank-${i}`} />
-                        ))}
-                        {calendarDays.days.map((d) => {
-                          const isSelected = form.preferred_date === d.value;
-                          const isDisabled = d.isPast;
-                          return (
-                            <button
-                              key={d.day}
-                              type="button"
-                              disabled={isDisabled}
-                              onClick={() => handleDateSelect(d.value)}
-                              className={`aspect-square rounded-xl flex items-center justify-center text-[13px] transition-all duration-200 ${
-                                isSelected
-                                  ? 'bg-brand text-white font-bold shadow-md shadow-brand/25'
-                                  : isDisabled
-                                  ? 'text-gray-200 cursor-not-allowed'
-                                  : d.isSunday
-                                  ? 'text-red-400 hover:bg-red-50'
-                                  : 'text-gray-600 hover:bg-gray-50'
-                              }`}
-                            >
-                              {d.day}
-                            </button>
-                          );
-                        })}
-                      </div>
-                      {form.preferred_date && (
-                        <p className="text-[13px] text-brand font-medium mt-4 text-center">
-                          {form.preferred_date.replace(/-/g, '. ')} 선택됨
-                        </p>
-                      )}
-                    </motion.div>
-                  )}
+                      <button
+                        onClick={goNextMonth}
+                        className="w-9 h-9 rounded-full flex items-center justify-center border border-gray-200 text-gray-400 hover:border-brand hover:text-brand transition-all"
+                      >
+                        <ChevronRight size={16} />
+                      </button>
+                    </div>
+                    {/* Weekday headers */}
+                    <div className="grid grid-cols-7 mb-2">
+                      {WEEKDAYS.map((w, i) => (
+                        <div key={w} className={`text-center text-[11px] font-medium py-1 ${
+                          i === 0 ? 'text-red-300' : 'text-gray-400'
+                        }`}>
+                          {w}
+                        </div>
+                      ))}
+                    </div>
+                    {/* Day cells */}
+                    <div className="grid grid-cols-7 gap-1">
+                      {calendarDays.blanks.map((_, i) => (
+                        <div key={`blank-${i}`} />
+                      ))}
+                      {calendarDays.days.map((d) => {
+                        const isSelected = form.preferred_date === d.value;
+                        const isDisabled = d.isPast;
+                        return (
+                          <button
+                            key={d.day}
+                            type="button"
+                            disabled={isDisabled}
+                            onClick={() => handleDateSelect(d.value)}
+                            className={`aspect-square rounded-xl flex items-center justify-center text-[13px] transition-all duration-200 ${
+                              isSelected
+                                ? 'bg-brand text-white font-bold shadow-md shadow-brand/25'
+                                : isDisabled
+                                ? 'text-gray-200 cursor-not-allowed'
+                                : d.isSunday
+                                ? 'text-red-400 hover:bg-red-50'
+                                : 'text-gray-600 hover:bg-gray-50'
+                            }`}
+                          >
+                            {d.day}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {form.preferred_date && (
+                      <p className="text-[13px] text-brand font-medium mt-4 text-center">
+                        {form.preferred_date.replace(/-/g, '. ')} 선택됨
+                      </p>
+                    )}
+                  </div>
                 </motion.div>
               </section>
 
