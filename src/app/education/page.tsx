@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useMemo, useRef, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CheckCircle, GraduationCap, ArrowRight, Calendar, ChevronLeft, ChevronRight, TreePine, Home, FileText, Upload } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, GraduationCap, ArrowRight, Calendar, ChevronLeft, ChevronRight, TreePine, Home, Mail } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const PROGRAM_TYPES = [
   {
@@ -13,8 +13,6 @@ const PROGRAM_TYPES = [
     labelEn: 'Indoor Program',
     desc: '실내 교육 공간에서 진행되는 프로그램입니다.\n생태 관찰, 브리딩 과학, 사육 이론 등을 학습합니다.',
     icon: <Home size={28} />,
-    image: '/images/education-indoor.jpg',
-    fallbackGradient: 'from-amber-100 to-orange-50',
   },
   {
     value: 'outdoor',
@@ -22,8 +20,6 @@ const PROGRAM_TYPES = [
     labelEn: 'Outdoor Program',
     desc: '야외 생태 환경에서 진행되는 체험형 프로그램입니다.\n자연 서식지 탐구, 생태 보호 활동을 체험합니다.',
     icon: <TreePine size={28} />,
-    image: '/images/education-outdoor.jpg',
-    fallbackGradient: 'from-green-100 to-emerald-50',
   },
 ];
 
@@ -79,9 +75,6 @@ export default function EducationPage() {
     contact_name: '', phone: '', email: '',
     participants: '', preferred_date: '', message: '',
   });
-  const [hoveredProgram, setHoveredProgram] = useState<string | null>(null);
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const pdfInputRef = useRef<HTMLInputElement>(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -131,15 +124,6 @@ export default function EducationPage() {
     if (!canSubmit || submitting) return;
     setSubmitting(true);
     try {
-      const formData = new FormData();
-      formData.append('data', JSON.stringify({
-        ...form,
-        org_type: form.org_type === 'other' ? form.org_type_custom : form.org_type,
-      }));
-      if (pdfFile) {
-        formData.append('pdf', pdfFile);
-      }
-
       const res = await fetch('/api/education', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -156,9 +140,6 @@ export default function EducationPage() {
   const handleDateSelect = (dateValue: string) => {
     setForm({ ...form, preferred_date: form.preferred_date === dateValue ? '' : dateValue });
   };
-
-  // Current display image based on hover or selection
-  const activeProgram = hoveredProgram || form.program_type;
 
   return (
     <>
@@ -227,60 +208,6 @@ export default function EducationPage() {
                   <p className="text-[14px] text-gray-400 mt-2 leading-relaxed">원하시는 교육 프로그램 유형을 선택해주세요.</p>
                 </motion.div>
 
-                {/* Program image preview area */}
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.05 }}
-                  className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 bg-gray-100"
-                >
-                  <AnimatePresence mode="wait">
-                    {activeProgram ? (
-                      <motion.div
-                        key={activeProgram}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.4 }}
-                        className="absolute inset-0"
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={PROGRAM_TYPES.find(p => p.value === activeProgram)?.image || ''}
-                          alt={PROGRAM_TYPES.find(p => p.value === activeProgram)?.label || ''}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                          }}
-                        />
-                        <div className={`absolute inset-0 bg-gradient-to-br ${PROGRAM_TYPES.find(p => p.value === activeProgram)?.fallbackGradient || ''}`} style={{ zIndex: -1 }} />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                        <div className="absolute bottom-6 left-6 right-6">
-                          <p className="text-[11px] tracking-[0.2em] uppercase text-white/50 mb-1.5"
-                            style={{ fontFamily: 'var(--font-accent)' }}>
-                            {PROGRAM_TYPES.find(p => p.value === activeProgram)?.labelEn}
-                          </p>
-                          <p className="text-xl font-display font-bold text-white">
-                            {PROGRAM_TYPES.find(p => p.value === activeProgram)?.label}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="placeholder"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100"
-                      >
-                        <GraduationCap size={40} className="text-gray-200 mb-3" />
-                        <p className="text-[14px] text-gray-300">프로그램을 선택해주세요</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-
                 {/* Program cards */}
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
@@ -293,8 +220,6 @@ export default function EducationPage() {
                       key={program.value}
                       type="button"
                       onClick={() => setForm({ ...form, program_type: program.value })}
-                      onMouseEnter={() => setHoveredProgram(program.value)}
-                      onMouseLeave={() => setHoveredProgram(null)}
                       className={`relative overflow-hidden rounded-2xl border text-left transition-all duration-300 p-5 md:p-6 ${
                         form.program_type === program.value
                           ? 'border-brand bg-brand/[0.02] shadow-md shadow-brand/10'
@@ -334,57 +259,19 @@ export default function EducationPage() {
                   ))}
                 </motion.div>
 
-                {/* PDF Attachment */}
+                {/* Email notice */}
                 <motion.div
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.15 }}
                   className="mt-6"
                 >
-                  <p className="text-[13px] font-medium text-gray-500 mb-3 flex items-center gap-2">
-                    <FileText size={14} className="text-gray-400" />
-                    첨부파일 (선택)
-                  </p>
-                  <input
-                    ref={pdfInputRef}
-                    type="file"
-                    accept=".pdf"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) setPdfFile(file);
-                      e.target.value = '';
-                    }}
-                  />
-                  {pdfFile ? (
-                    <div className="flex items-center justify-between px-5 py-4 rounded-2xl border border-brand/20 bg-brand/[0.02]">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
-                          <FileText size={18} className="text-red-400" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-[13px] font-medium text-gray-700 truncate">{pdfFile.name}</p>
-                          <p className="text-[11px] text-gray-400">{(pdfFile.size / 1024 / 1024).toFixed(1)} MB</p>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => setPdfFile(null)}
-                        className="text-[12px] text-gray-400 hover:text-red-500 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50"
-                      >
-                        삭제
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => pdfInputRef.current?.click()}
-                      className="w-full flex items-center justify-center gap-2.5 px-5 py-4 rounded-2xl border-2 border-dashed border-gray-200 hover:border-brand/40 text-gray-400 hover:text-brand/60 transition-all duration-300 hover:bg-brand-50/20"
-                    >
-                      <Upload size={16} />
-                      <span className="text-[13px]">PDF 파일 첨부하기</span>
-                    </button>
-                  )}
-                  <p className="text-[11px] text-gray-300 mt-2">교육 관련 자료가 있으면 PDF로 첨부해주세요. (최대 10MB)</p>
+                  <div className="flex items-start gap-3 px-5 py-4 rounded-2xl bg-brand/[0.03] border border-brand/10">
+                    <Mail size={16} className="text-brand/50 mt-0.5 shrink-0" />
+                    <p className="text-[13px] text-gray-500 leading-relaxed">
+                      세부 프로그램 내용은 기재해주신 이메일로 확인 후 발송드리겠습니다.
+                    </p>
+                  </div>
                 </motion.div>
               </section>
 
