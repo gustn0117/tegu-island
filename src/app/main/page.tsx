@@ -24,6 +24,10 @@ export default async function MainPage() {
     <>
       <HeroBanner slides={(bannerSlides as BannerSlide[]) || []} />
 
+      {/* 테구아일랜드가 하는 일 (2단2열) */}
+      <div className="section-divider" />
+      <GateSection />
+
       {/* 분양 중인 개체 */}
       <div className="section-divider" />
       <section className="py-24 md:py-32 px-8 bg-gray-50/40">
@@ -31,10 +35,6 @@ export default async function MainPage() {
           <AdoptionSection adoptions={(adoptions as Adoption[]) || []} compact />
         </div>
       </section>
-
-      {/* 테구아일랜드가 하는 일 (2단2열) */}
-      <div className="section-divider" />
-      <GateSection />
 
       {/* 공지사항 + 케어시트 (2열) */}
       <div className="section-divider" />
