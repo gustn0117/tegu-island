@@ -31,7 +31,6 @@ export default async function MainPage() {
 
   const allProducts = (products as Product[]) || [];
   const featuredProducts = allProducts.filter(p => p.product_type === 'featured');
-  const newProducts = allProducts.filter(p => p.product_type === 'new');
   const supplies = allProducts.filter(p => p.product_type === 'supply');
   const allAdoptions = (adoptions as Adoption[]) || [];
 
@@ -61,7 +60,7 @@ export default async function MainPage() {
 
       {/* 추천상품 + 사육용품 */}
       <div className="section-divider" />
-      <ProductSection featuredProducts={featuredProducts} newProducts={newProducts} supplies={supplies} />
+      <ProductSection featuredProducts={featuredProducts} supplies={supplies} />
 
       {/* 구매후기 */}
       <div className="section-divider" />

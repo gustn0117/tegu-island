@@ -147,11 +147,10 @@ export function CompactProductColumn({ products, ko, en, delay = 0 }: { products
 
 interface Props {
   featuredProducts: Product[];
-  newProducts: Product[];
   supplies: Product[];
 }
 
-export default function ProductSection({ featuredProducts, newProducts, supplies }: Props) {
+export default function ProductSection({ featuredProducts, supplies }: Props) {
   return (
     <>
       <section className="py-24 md:py-28 px-8" id="featured">
@@ -177,27 +176,6 @@ export default function ProductSection({ featuredProducts, newProducts, supplies
                 </p>
               </div>
             </>
-          )}
-        </div>
-      </section>
-
-      <div className="section-divider" />
-      <section className="py-24 md:py-28 px-8 bg-gray-50/50" id="new-products">
-        <div className="max-w-7xl mx-auto">
-          <SectionTitle
-            ko="신상품"
-            en="New Arrivals"
-            sub="새로 입고된 사육용품을 확인하세요"
-            subEn="Check out our latest equipment"
-          />
-          {newProducts.length === 0 ? (
-            <EmptyProductState title="신상품" />
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
-              {newProducts.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
           )}
         </div>
       </section>
