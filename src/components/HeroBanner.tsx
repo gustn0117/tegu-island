@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Eye, Shield, GraduationCap, Leaf, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import type { BannerSlide } from '@/lib/types';
 import Link from 'next/link';
 
@@ -84,38 +84,6 @@ export default function HeroBanner({ slides }: Props) {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
-          >
-            {[
-              { icon: <Eye size={28} />, label: '생태형 전시', labelEn: 'Ecological Exhibition', desc: '자연 서식지를 재현한 관찰형 전시' },
-              { icon: <Shield size={28} />, label: '전문 라인브리딩', labelEn: 'Line Breeding', desc: '혈통과 퀄리티 중심 전문 육종' },
-              { icon: <Leaf size={28} />, label: '윤리적 분양', labelEn: 'Ethical Adoption', desc: '가족이 될 수 있는 인연을 연결' },
-              { icon: <GraduationCap size={28} />, label: '교육 프로그램', labelEn: 'Education', desc: '관찰형·교육형 체험 프로그램' },
-            ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + i * 0.1, duration: 0.6 }}
-                className="group relative rounded-2xl overflow-hidden bg-white subtle-border card-hover"
-              >
-                <div className="aspect-[3/2] flex flex-col items-center justify-center p-8 bg-gray-50/50">
-                  <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-500 group-hover:scale-110 bg-brand-50">
-                    <div className="text-brand/50">{item.icon}</div>
-                  </div>
-                  <p className="text-[15px] font-semibold text-gray-600 group-hover:text-gray-900 transition-colors">{item.label}</p>
-                  <p className="text-[12px] mt-1.5 text-gray-400 leading-relaxed text-center">{item.desc}</p>
-                  <p className="text-[11px] mt-2 tracking-[0.1em] uppercase text-gray-300" style={{ fontFamily: 'var(--font-accent)' }}>
-                    {item.labelEn}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
         </div>
       </section>
     );

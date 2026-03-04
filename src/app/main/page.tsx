@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import type { BannerSlide, Notice, CareSheet, Adoption, DailyPost, Product, Review } from '@/lib/types';
 import HeroBanner from '@/components/HeroBanner';
+import GateSection from '@/components/GateSection';
 import NoticeSection from '@/components/NoticeSection';
 import AdoptionSection from '@/components/AdoptionSection';
 import DailySection from '@/components/DailySection';
@@ -34,6 +35,18 @@ export default async function MainPage() {
     <>
       <HeroBanner slides={(bannerSlides as BannerSlide[]) || []} />
 
+      {/* 분양 중인 개체 (히어로 바로 아래, 기존 4카드 대체) */}
+      <div className="section-divider" />
+      <section className="py-24 md:py-32 px-8 bg-gray-50/40">
+        <div className="max-w-7xl mx-auto">
+          <AdoptionSection adoptions={(adoptions as Adoption[]) || []} compact />
+        </div>
+      </section>
+
+      {/* 테구아일랜드가 하는 일 (2단2열) */}
+      <div className="section-divider" />
+      <GateSection />
+
       {/* 공지사항 + 케어시트 (2열) */}
       <div className="section-divider" />
       <NoticeSection notices={(notices as Notice[]) || []} careSheets={(careSheets as CareSheet[]) || []} />
@@ -46,17 +59,9 @@ export default async function MainPage() {
         </div>
       </section>
 
-      {/* 분양 중인 개체 (1열) */}
-      <div className="section-divider" />
-      <section className="py-24 md:py-32 px-8 bg-gray-50/40">
-        <div className="max-w-7xl mx-auto">
-          <AdoptionSection adoptions={(adoptions as Adoption[]) || []} compact />
-        </div>
-      </section>
-
       {/* 추천상품 (1열) */}
       <div className="section-divider" />
-      <section className="py-24 md:py-32 px-8">
+      <section className="py-24 md:py-32 px-8 bg-gray-50/40">
         <div className="max-w-7xl mx-auto">
           <CompactProductColumn products={(featuredProducts as Product[]) || []} ko="추천상품" en="Recommended" />
         </div>
@@ -64,7 +69,7 @@ export default async function MainPage() {
 
       {/* 사육용품 (1열) */}
       <div className="section-divider" />
-      <section className="py-24 md:py-32 px-8 bg-gray-50/40">
+      <section className="py-24 md:py-32 px-8">
         <div className="max-w-7xl mx-auto">
           <CompactProductColumn products={(supplies as Product[]) || []} ko="사육용품" en="Keeping Supplies" />
         </div>
@@ -72,7 +77,7 @@ export default async function MainPage() {
 
       {/* 구매후기 (1열) */}
       <div className="section-divider" />
-      <section className="py-24 md:py-32 px-8">
+      <section className="py-24 md:py-32 px-8 bg-gray-50/40">
         <div className="max-w-7xl mx-auto">
           <ReviewSection reviews={(reviews as Review[]) || []} compact />
         </div>
