@@ -1,9 +1,12 @@
 import { supabase } from '@/lib/supabase';
-import type { BannerSlide, Notice, CareSheet, Adoption } from '@/lib/types';
+import type { BannerSlide, Notice, CareSheet, DailyPost, Product, Review, Adoption } from '@/lib/types';
 import HeroBanner from '@/components/HeroBanner';
 import GateSection from '@/components/GateSection';
 import NoticeSection from '@/components/NoticeSection';
+import DailySection from '@/components/DailySection';
 import AdoptionSection from '@/components/AdoptionSection';
+import ProductSection from '@/components/ProductSection';
+import ReviewSection from '@/components/ReviewSection';
 
 export const revalidate = 60;
 
@@ -12,17 +15,33 @@ export default async function MainPage() {
     { data: bannerSlides },
     { data: notices },
     { data: careSheets },
+    { data: dailyPosts },
+    { data: products },
+    { data: reviews },
     { data: adoptions },
   ] = await Promise.all([
     supabase.from('banner_slides').select('*').eq('is_active', true).order('sort_order'),
     supabase.from('notices').select('*').eq('is_active', true).order('created_at', { ascending: false }),
     supabase.from('care_sheets').select('*').eq('is_active', true).order('sort_order'),
-    supabase.from('adoptions').select('*').eq('is_active', true).eq('status', 'Active').order('sort_order').limit(6),
+    supabase.from('daily_posts').select('*').eq('is_active', true).order('created_at', { ascending: false }),
+    supabase.from('products').select('*').eq('is_active', true).order('sort_order'),
+    supabase.from('reviews').select('*').eq('is_active', true).order('created_at', { ascending: false }),
+    supabase.from('adoptions').select('*').eq('is_active', true).eq('status', 'Active').order('sort_order'),
   ]);
+
+  const allProducts = (products as Product[]) || [];
+  const featuredProducts = allProducts.filter(p => p.product_type === 'featured');
+  const newProducts = allProducts.filter(p => p.product_type === 'new');
+  const supplies = allProducts.filter(p => p.product_type === 'supply');
+  const allAdoptions = (adoptions as Adoption[]) || [];
 
   return (
     <>
       <HeroBanner slides={(bannerSlides as BannerSlide[]) || []} />
+
+      {/* 분양 중인 개체 (1st) */}
+      <div className="section-divider" />
+      <AdoptionSection adoptions={allAdoptions.slice(0, 6)} />
 
       {/* 테구아일랜드가 하는 일 (2단2열) */}
       <div className="section-divider" />
@@ -32,13 +51,21 @@ export default async function MainPage() {
       <div className="section-divider" />
       <NoticeSection notices={(notices as Notice[]) || []} careSheets={(careSheets as CareSheet[]) || []} />
 
-      {/* 분양 중인 개체 */}
+      {/* 일상 */}
       <div className="section-divider" />
-      <section className="py-24 md:py-32 px-8 bg-gray-50/40">
-        <div className="max-w-7xl mx-auto">
-          <AdoptionSection adoptions={(adoptions as Adoption[]) || []} compact />
-        </div>
-      </section>
+      <DailySection posts={(dailyPosts as DailyPost[]) || []} />
+
+      {/* 분양 중인 개체 (2nd) */}
+      <div className="section-divider" />
+      <AdoptionSection adoptions={allAdoptions.slice(0, 6)} />
+
+      {/* 추천상품 + 사육용품 */}
+      <div className="section-divider" />
+      <ProductSection featuredProducts={featuredProducts} newProducts={newProducts} supplies={supplies} />
+
+      {/* 구매후기 */}
+      <div className="section-divider" />
+      <ReviewSection reviews={(reviews as Review[]) || []} />
     </>
   );
 }
