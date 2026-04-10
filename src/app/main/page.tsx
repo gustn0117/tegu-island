@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import type { BannerSlide, Notice, CareSheet, DailyPost, Product, Review, Adoption } from '@/lib/types';
 import HeroBanner from '@/components/HeroBanner';
+import WelcomeSection from '@/components/WelcomeSection';
 import GateSection from '@/components/GateSection';
 import NoticeSection from '@/components/NoticeSection';
 import DailySection from '@/components/DailySection';
@@ -37,6 +38,9 @@ export default async function MainPage() {
   return (
     <>
       <HeroBanner slides={(bannerSlides as BannerSlide[]) || []} />
+
+      {/* Welcome 섹션 */}
+      <WelcomeSection />
 
       {/* 분양 중인 개체 (1st) */}
       <div className="section-divider" />

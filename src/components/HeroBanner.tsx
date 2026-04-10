@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { BannerSlide } from '@/lib/types';
 import Link from 'next/link';
 
@@ -11,10 +11,8 @@ interface Props {
 }
 
 export default function HeroBanner({ slides }: Props) {
-  const trackRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
 
   const displaySlides = slides.length > 0 ? slides : [];
   const total = displaySlides.length;
@@ -28,240 +26,138 @@ export default function HeroBanner({ slides }: Props) {
   }, [total]);
 
   useEffect(() => {
-    if (isPaused || isDragging || total <= 1) return;
+    if (isPaused || total <= 1) return;
     const timer = setInterval(next, 5000);
     return () => clearInterval(timer);
-  }, [isPaused, isDragging, next, total]);
-
-  // Scroll to current slide with offset for active-center feel
-  useEffect(() => {
-    if (!trackRef.current || total === 0) return;
-    const track = trackRef.current;
-    const cards = track.querySelectorAll('[data-slide]');
-    if (cards[current]) {
-      const card = cards[current] as HTMLElement;
-      const trackWidth = track.clientWidth;
-      const cardWidth = card.offsetWidth;
-      const scrollLeft = card.offsetLeft - (trackWidth / 2) + (cardWidth / 2);
-      track.scrollTo({ left: scrollLeft, behavior: 'smooth' });
-    }
-  }, [current, total]);
+  }, [isPaused, next, total]);
 
   // Fallback: no slides
   if (slides.length === 0) {
     return (
-      <section className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-8 w-full relative z-10 py-16 md:py-24 lg:py-28">
-          <motion.div
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-16 lg:mb-20"
-          >
-            <p className="text-[12px] md:text-[13px] tracking-[0.3em] uppercase mb-5 text-gray-400"
-              style={{ fontFamily: 'var(--font-accent)' }}>
-              TEGU ISLAND — Since 2020
-            </p>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.35] tracking-tight mb-6 text-gray-900">
-              테구의 자연을<br />
-              <span className="text-brand-700">사람에게 보여주다</span>
-            </h1>
-            <p className="text-lg md:text-xl mb-4 text-gray-500 max-w-lg">
-              아시아 유일의 테구 전문 생태 전시 · 라인브리딩 · 교육 센터
-            </p>
-            <p className="text-[13px] md:text-[14px] mb-12 max-w-lg text-gray-400" style={{ fontFamily: 'var(--font-accent)' }}>
-              Asia&apos;s Only Specialized Tegu Ecological Exhibition · Line Breeding · Education Center
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/visit"
-                className="btn-primary px-10 py-4 text-[15px] tracking-wider rounded-full">
-                방문예약
-              </Link>
-              <Link href="/contact"
-                className="btn-outline px-10 py-4 text-[15px] tracking-wider rounded-full">
-                분양문의
-              </Link>
-            </div>
-          </motion.div>
-
+      <section className="relative w-full h-[50vh] md:h-[70vh] bg-gray-100 flex items-center justify-center">
+        <div className="text-center px-8">
+          <p className="text-[12px] md:text-[13px] tracking-[0.3em] uppercase mb-4 text-gray-400"
+            style={{ fontFamily: 'var(--font-accent)' }}>
+            TEGU ISLAND — Since 2020
+          </p>
+          <h1 className="text-4xl md:text-6xl font-display font-bold leading-[1.35] tracking-tight text-gray-900">
+            테구의 자연을<br />
+            <span className="text-brand-700">사람에게 보여주다</span>
+          </h1>
+          <div className="flex flex-wrap gap-3 mt-10 justify-center">
+            <Link href="/visit"
+              className="btn-primary px-10 py-4 text-[15px] tracking-wider rounded-full">
+              방문예약
+            </Link>
+            <Link href="/contact"
+              className="btn-outline px-10 py-4 text-[15px] tracking-wider rounded-full">
+              분양문의
+            </Link>
+          </div>
         </div>
       </section>
     );
   }
 
+  const slide = displaySlides[current];
+
   return (
     <section
-      className="relative w-full py-16 md:py-24 lg:py-28"
+      className="relative w-full h-[50vh] md:h-[70vh] overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Header area */}
-      <div className="max-w-7xl mx-auto px-8 mb-12 md:mb-16">
+      {/* Background images */}
+      <AnimatePresence mode="wait">
         <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-8"
+          key={current}
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: 'easeInOut' }}
         >
-          <div>
-            <p className="text-[12px] md:text-[13px] tracking-[0.3em] uppercase mb-4 text-gray-400"
-              style={{ fontFamily: 'var(--font-accent)' }}>
-              TEGU ISLAND — Since 2020
-            </p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-[1.35] tracking-tight text-gray-900">
-              테구의 자연을<br className="sm:hidden" /> 사람에게 보여주다
-            </h1>
-            <p className="text-base md:text-lg mt-4 text-gray-400 max-w-md leading-relaxed">
-              생태형 전시 · 전문 라인브리딩 · 교육 센터
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            {/* Progress dots */}
-            <div className="flex items-center gap-2">
-              {displaySlides.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrent(i)}
-                  className="group flex items-center justify-center py-2"
-                  aria-label={`슬라이드 ${i + 1}`}
-                >
-                  <div className={`rounded-full transition-all duration-500 ${
-                    i === current
-                      ? 'w-8 h-[3px] bg-brand'
-                      : 'w-4 h-[3px] bg-gray-200 group-hover:bg-gray-400'
-                  }`} />
-                </button>
-              ))}
-            </div>
-            {/* Nav arrows */}
-            <div className="flex items-center gap-2 ml-2">
-              <button
-                onClick={prev}
-                className="w-11 h-11 rounded-full flex items-center justify-center border border-gray-200 text-gray-400 hover:border-brand hover:text-brand hover:bg-brand-50/50 transition-all duration-300"
-                aria-label="이전"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                onClick={next}
-                className="w-11 h-11 rounded-full flex items-center justify-center border border-gray-200 text-gray-400 hover:border-brand hover:text-brand hover:bg-brand-50/50 transition-all duration-300"
-                aria-label="다음"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-          </div>
+          {slide.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={slide.image_url}
+              alt={slide.title}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
+          )}
+          {/* Gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-l from-black/50 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
         </motion.div>
-      </div>
+      </AnimatePresence>
 
-      {/* Carousel track */}
-      <motion.div
-        initial={{ y: 30, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-      >
-        <div
-          ref={trackRef}
-          className="flex gap-5 md:gap-7 overflow-x-auto scroll-smooth px-8 pb-6 snap-x snap-mandatory no-scrollbar"
-          onTouchStart={() => setIsDragging(true)}
-          onTouchEnd={() => setIsDragging(false)}
-        >
-          {/* Left spacer */}
-          <div className="shrink-0 w-0 lg:w-[calc((100vw-1280px)/2+16px)]" />
-
-          {displaySlides.map((slide, i) => {
-            const isActive = i === current;
-            const hasLink = !!slide.link;
-
-            const cardContent = (
-              <div className="relative rounded-2xl lg:rounded-3xl overflow-hidden shadow-lg">
-                <div className="aspect-[4/5] sm:aspect-[3/4] relative overflow-hidden">
-                  {slide.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={slide.image_url}
-                      alt={slide.title}
-                      className="w-full h-full object-cover transition-transform duration-[800ms] ease-out group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent" />
-
-                  {/* Content overlay */}
-                  <div className="absolute inset-0 flex flex-col justify-end p-7 md:p-9">
-                    {slide.subtitle_en && (
-                      <p className="text-[11px] md:text-[12px] tracking-[0.2em] uppercase mb-3 text-white/50"
-                        style={{ fontFamily: 'var(--font-accent)' }}>
-                        {slide.subtitle_en}
-                      </p>
-                    )}
-                    <h3 className="text-2xl md:text-3xl font-display font-bold leading-[1.35] text-white mb-2">
-                      {slide.title}
-                    </h3>
-                    {slide.subtitle && (
-                      <p className="text-[14px] md:text-[15px] leading-relaxed text-white/60 line-clamp-2 mb-6">
-                        {slide.subtitle}
-                      </p>
-                    )}
-                    {hasLink && (
-                      <span className="inline-flex items-center gap-2 text-[13px] font-medium text-white/70 group-hover:text-white transition-colors duration-300">
-                        자세히 보기
-                        <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-
-            return (
+      {/* Text overlay - right side */}
+      <div className="absolute inset-0 flex items-center z-10">
+        <div className="max-w-7xl mx-auto w-full px-8 md:px-12">
+          <div className="md:ml-auto md:max-w-[50%] lg:max-w-[45%]">
+            <AnimatePresence mode="wait">
               <motion.div
-                key={slide.id}
-                data-slide
-                className="shrink-0 snap-center"
-                style={{ width: 'clamp(300px, 72vw, 460px)' }}
-                animate={{
-                  scale: isActive ? 1 : 0.94,
-                  opacity: isActive ? 1 : 0.55,
-                }}
+                key={current}
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -20, opacity: 0 }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                onClick={() => setCurrent(i)}
               >
-                {hasLink ? (
-                  <Link href={slide.link!} className="block group cursor-pointer">
-                    {cardContent}
-                  </Link>
-                ) : (
-                  <div className="block group cursor-pointer">
-                    {cardContent}
-                  </div>
+                {slide.subtitle_en && (
+                  <p className="text-[13px] md:text-[15px] tracking-wide mb-4 text-white/70"
+                    style={{ fontFamily: 'var(--font-accent)' }}>
+                    {slide.subtitle_en}
+                  </p>
+                )}
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold leading-[1.2] text-white mb-4">
+                  {slide.title}
+                </h2>
+                {slide.subtitle && (
+                  <p className="text-[14px] md:text-[16px] leading-relaxed text-white/70 max-w-md">
+                    {slide.subtitle}
+                  </p>
                 )}
               </motion.div>
-            );
-          })}
-
-          {/* Right spacer */}
-          <div className="shrink-0 w-8 lg:w-[calc((100vw-1280px)/2+16px)]" />
+            </AnimatePresence>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* CTA buttons */}
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        className="max-w-7xl mx-auto px-8 mt-12 md:mt-16 flex flex-wrap gap-3"
+      {/* Navigation arrows */}
+      <button
+        onClick={prev}
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-sm text-white/80 hover:bg-white/20 hover:text-white transition-all duration-300"
+        aria-label="이전"
       >
-        <Link href="/booking"
-          className="btn-primary px-10 py-4 text-[15px] tracking-wider rounded-full">
-          방문예약
-        </Link>
-        <Link href="/contact"
-          className="btn-outline px-10 py-4 text-[15px] tracking-wider rounded-full">
-          분양문의
-        </Link>
-      </motion.div>
+        <ChevronLeft size={20} />
+      </button>
+      <button
+        onClick={next}
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-sm text-white/80 hover:bg-white/20 hover:text-white transition-all duration-300"
+        aria-label="다음"
+      >
+        <ChevronRight size={20} />
+      </button>
+
+      {/* Dot indicators */}
+      <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+        {displaySlides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            className="group py-2"
+            aria-label={`슬라이드 ${i + 1}`}
+          >
+            <div className={`rounded-full transition-all duration-500 ${
+              i === current
+                ? 'w-8 h-[3px] bg-white'
+                : 'w-4 h-[3px] bg-white/40 group-hover:bg-white/60'
+            }`} />
+          </button>
+        ))}
+      </div>
     </section>
   );
 }
