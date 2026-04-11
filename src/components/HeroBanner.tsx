@@ -111,7 +111,7 @@ export default function HeroBanner({ slides }: Props) {
                     {slide.subtitle_en}
                   </p>
                 )}
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold leading-[1.2] text-white mb-4">
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold !leading-[1.2] text-white mb-4">
                   {slide.title}
                 </h2>
                 {slide.subtitle && (

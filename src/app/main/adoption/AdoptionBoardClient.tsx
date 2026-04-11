@@ -109,7 +109,7 @@ function AdoptionCard({ animal, index }: { animal: Adoption; index: number }) {
 
         {/* Info */}
         <div>
-          <h3 className="text-[14px] text-gray-800 group-hover:text-gray-600 transition-colors leading-snug">
+          <h3 className="text-[14px] text-gray-800 group-hover:text-gray-600 transition-colors">
             {animal.name}
             {animal.species ? ` - ${animal.species}` : ''}
           </h3>

@@ -103,7 +103,7 @@ export default function DailySection({ posts, compact }: Props) {
                   </div>
                 </div>
                 <div className="mt-5 px-0.5">
-                  <h4 className={`font-medium text-gray-600 group-hover:text-gray-900 transition-colors leading-relaxed ${idx === 0 ? 'text-lg md:text-xl' : 'text-[15px] md:text-base'}`}>
+                  <h4 className={`font-medium text-gray-600 group-hover:text-gray-900 transition-colors !leading-relaxed ${idx === 0 ? 'text-lg md:text-xl' : 'text-[15px] md:text-base'}`}>
                     {post.title}
                   </h4>
                   <p className="text-[12px] mt-2 text-gray-300">{post.date}</p>

@@ -77,7 +77,7 @@ export default function NoticesPageClient({ notices }: Props) {
                       </span>
                       <span className="text-[12px] text-gray-300">{n.date}</span>
                     </div>
-                    <h3 className="text-base md:text-lg font-medium text-gray-700 group-hover:text-gray-900 transition-colors leading-relaxed">
+                    <h3 className="text-base md:text-lg font-medium text-gray-700 group-hover:text-gray-900 transition-colors !leading-relaxed">
                       {n.title}
                     </h3>
                   </div>

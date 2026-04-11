@@ -60,7 +60,7 @@ function SectionHeader({ num, title, desc, delay = 0 }: { num: string; title: st
         style={{ fontFamily: 'var(--font-accent)' }}>
         {num}
       </p>
-      <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 leading-snug">
+      <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900">
         {title}
       </h2>
       <p className="text-[14px] text-gray-400 mt-2 leading-relaxed">{desc}</p>
@@ -202,7 +202,7 @@ export default function EducationPage() {
                     style={{ fontFamily: 'var(--font-accent)' }}>
                     PROGRAM
                   </p>
-                  <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 leading-snug">
+                  <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900">
                     프로그램 선택
                   </h2>
                   <p className="text-[14px] text-gray-400 mt-2 leading-relaxed">원하시는 교육 프로그램 유형을 선택해주세요.</p>

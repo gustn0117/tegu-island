@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CheckCircle, Calendar, Clock, Users, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { CheckCircle, Calendar, Clock, Users, ChevronLeft, ChevronRight, ArrowRight, Phone, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const TIME_SLOTS = [
@@ -200,7 +200,7 @@ export default function VisitPage() {
                 <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
                   <div className="mb-8">
                     <p className="text-[12px] font-bold text-brand/40 tracking-widest mb-3" style={{ fontFamily: 'var(--font-accent)' }}>01</p>
-                    <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 leading-snug">날짜 선택</h2>
+                    <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900">날짜 선택</h2>
                     <p className="text-[14px] text-gray-400 mt-2">방문하실 날짜를 선택해주세요. (월요일 휴무)</p>
                   </div>
 
@@ -282,7 +282,7 @@ export default function VisitPage() {
                 <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
                   <div className="mb-8">
                     <p className="text-[12px] font-bold text-brand/40 tracking-widest mb-3" style={{ fontFamily: 'var(--font-accent)' }}>02</p>
-                    <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 leading-snug">시간 선택</h2>
+                    <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900">시간 선택</h2>
                     <p className="text-[14px] text-gray-400 mt-2">원하시는 방문 시간대를 선택해주세요.</p>
                   </div>
 
@@ -313,7 +313,7 @@ export default function VisitPage() {
                 <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
                   <div className="mb-8">
                     <p className="text-[12px] font-bold text-brand/40 tracking-widest mb-3" style={{ fontFamily: 'var(--font-accent)' }}>03</p>
-                    <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 leading-snug">방문 인원</h2>
+                    <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900">방문 인원</h2>
                     <p className="text-[14px] text-gray-400 mt-2">방문 인원수를 선택해주세요. (선택)</p>
                   </div>
 
@@ -341,7 +341,7 @@ export default function VisitPage() {
                 <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
                   <div className="mb-8">
                     <p className="text-[12px] font-bold text-brand/40 tracking-widest mb-3" style={{ fontFamily: 'var(--font-accent)' }}>04</p>
-                    <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 leading-snug">예약자 정보</h2>
+                    <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900">예약자 정보</h2>
                     <p className="text-[14px] text-gray-400 mt-2">예약자의 이름과 연락처를 입력해주세요.</p>
                   </div>
 
@@ -369,7 +369,7 @@ export default function VisitPage() {
                 <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
                   <div className="mb-8">
                     <p className="text-[12px] font-bold text-brand/40 tracking-widest mb-3" style={{ fontFamily: 'var(--font-accent)' }}>05</p>
-                    <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900 leading-snug">추가 요청사항</h2>
+                    <h2 className="text-2xl md:text-[28px] font-display font-bold text-gray-900">추가 요청사항</h2>
                     <p className="text-[14px] text-gray-400 mt-2">전달할 내용이 있다면 작성해주세요. (선택)</p>
                   </div>
                   <textarea
@@ -436,6 +436,39 @@ export default function VisitPage() {
                     이름, 연락처, 날짜, 시간은 필수 항목입니다.
                   </p>
                 )}
+              </motion.section>
+
+              {/* 연락처 */}
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.45 }}
+                className="mt-14 p-6 md:p-8 rounded-2xl bg-gray-50 border border-gray-100"
+              >
+                <p className="text-[12px] font-bold text-brand/40 tracking-widest mb-5" style={{ fontFamily: 'var(--font-accent)' }}>CONTACT</p>
+                <h3 className="text-xl font-display font-bold text-gray-900 mb-6">연락처</h3>
+                <div className="space-y-5">
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-gray-200">
+                      <Phone size={16} className="text-brand/60" />
+                    </div>
+                    <div>
+                      <p className="text-[15px] font-semibold text-gray-800">010-8802-8361</p>
+                      <p className="text-[12px] mt-0.5 text-gray-400">오준혁 대표</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-gray-200">
+                      <MapPin size={16} className="text-brand/60" />
+                    </div>
+                    <div>
+                      <p className="text-[15px] text-gray-700 leading-relaxed">
+                        서울특별시 금천구 가산디지털1로 100
+                      </p>
+                      <p className="text-[14px] text-gray-500">에이스골드타워 211호</p>
+                    </div>
+                  </div>
+                </div>
               </motion.section>
             </div>
           )}
