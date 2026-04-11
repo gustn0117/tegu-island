@@ -21,6 +21,7 @@ const TABLES = [
   { key: 'adoptions', label: '분양 개체', labelEn: 'Adoptions', desc: '홈·분양 게시판·상세 페이지', page: '/main, /main/adoption' },
   { key: 'edu_applications', label: '교육 신청', labelEn: 'Education', desc: '교육 신청 접수 내역 (읽기)', page: '/education' },
   { key: 'visit_reservations', label: '방문예약', labelEn: 'Visits', desc: '농장 방문예약 접수 내역', page: '/visit' },
+  { key: 'gallery_photos', label: '갤러리', labelEn: 'Gallery', desc: '메인 분양섹션 슬라이드 사진', page: '/main' },
 ];
 
 const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; placeholder?: string }[]> = {
@@ -135,6 +136,12 @@ const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; 
     { key: 'message', label: '메시지', type: 'textarea', placeholder: '추가 요청 사항' },
     { key: 'status', label: '상태', type: 'select', placeholder: 'pending' },
   ],
+  gallery_photos: [
+    { key: 'image_url', label: '이미지', type: 'image' },
+    { key: 'caption', label: '설명', placeholder: '사진 설명 (선택)' },
+    { key: 'sort_order', label: '정렬순서', type: 'number' },
+    { key: 'is_active', label: '활성', type: 'checkbox' },
+  ],
 };
 
 const TABLE_DISPLAY_COLS: Record<string, string[]> = {
@@ -148,6 +155,7 @@ const TABLE_DISPLAY_COLS: Record<string, string[]> = {
   adoptions: ['id', 'image_url', 'name', 'species', 'status', 'sort_order', 'is_active'],
   edu_applications: ['id', 'org_name', 'org_type', 'contact_name', 'phone', 'status'],
   visit_reservations: ['id', 'name', 'phone', 'visitors', 'visit_date', 'visit_time', 'status'],
+  gallery_photos: ['id', 'image_url', 'caption', 'sort_order', 'is_active'],
 };
 
 const PRODUCT_TYPES = [

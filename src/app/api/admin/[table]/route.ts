@@ -12,6 +12,7 @@ const ALLOWED_TABLES = [
   'adoptions',
   'edu_applications',
   'visit_reservations',
+  'gallery_photos',
 ];
 
 function authenticate(req: NextRequest): boolean {

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Adoption } from '@/lib/types';
+import type { Adoption, GalleryPhoto } from '@/lib/types';
 import SectionTitle from './SectionTitle';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -64,12 +64,40 @@ function AdoptionCard({ animal, index, compact }: { animal: Adoption; index: num
   );
 }
 
+function PhotoMarquee({ photos }: { photos: GalleryPhoto[] }) {
+  if (photos.length === 0) return null;
+
+  // Duplicate for seamless loop
+  const items = [...photos, ...photos];
+
+  return (
+    <div className="mt-14 -mx-8 overflow-hidden">
+      <div className="flex animate-marquee">
+        {items.map((photo, i) => (
+          <div
+            key={`${photo.id}-${i}`}
+            className="shrink-0 w-72 md:w-80 h-48 md:h-56 mx-2 rounded-2xl overflow-hidden"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={photo.image_url}
+              alt={photo.caption || ''}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 interface Props {
   adoptions: Adoption[];
+  photos?: GalleryPhoto[];
   compact?: boolean;
 }
 
-export default function AdoptionSection({ adoptions, compact }: Props) {
+export default function AdoptionSection({ adoptions, photos = [], compact }: Props) {
   if (compact) {
     return (
       <motion.div
@@ -90,12 +118,7 @@ export default function AdoptionSection({ adoptions, compact }: Props) {
           </Link>
         </div>
         <div className="h-px bg-gray-200 mb-6" />
-        {adoptions.length === 0 ? (
-          <div className="py-16 flex flex-col items-center gap-3">
-            <PawPrint size={28} className="text-gray-200" />
-            <p className="text-[14px] text-gray-300">등록된 개체가 없습니다</p>
-          </div>
-        ) : (
+        {adoptions.length > 0 && (
           <div className="grid grid-cols-2 gap-4">
             {adoptions.slice(0, 4).map((a, i) => (
               <AdoptionCard key={a.id} animal={a} index={i} compact />
@@ -116,9 +139,7 @@ export default function AdoptionSection({ adoptions, compact }: Props) {
           subEn="Meet our healthy and beautiful tegus"
         />
 
-        {adoptions.length === 0 ? (
-          <p className="py-20 text-center text-[14px] text-gray-300">등록된 개체가 없습니다</p>
-        ) : (
+        {adoptions.length > 0 && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {adoptions.map((a, i) => (
@@ -142,6 +163,9 @@ export default function AdoptionSection({ adoptions, compact }: Props) {
             </motion.div>
           </>
         )}
+
+        {/* Photo marquee */}
+        <PhotoMarquee photos={photos} />
       </div>
     </section>
   );
