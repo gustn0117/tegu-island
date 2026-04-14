@@ -49,7 +49,7 @@ export default function WelcomeSection() {
             </p>
             <div className="flex flex-wrap items-center gap-4">
               <Link
-                href="/main/assets"
+                href="/about"
                 className="text-[13px] md:text-[14px] tracking-[0.1em] uppercase font-medium text-gray-800 hover:text-brand transition-colors duration-300 pb-1 border-b border-gray-300 hover:border-brand"
                 style={{ fontFamily: 'var(--font-accent)' }}
               >
