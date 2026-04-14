@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CheckCircle, Calendar, Clock, Users, ChevronLeft, ChevronRight, ArrowRight, Phone, MapPin } from 'lucide-react';
+import { CheckCircle, Calendar, Clock, Users, ChevronLeft, ChevronRight, ArrowRight, Phone, MapPin, Mail, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const TIME_SLOTS = [
@@ -455,6 +455,28 @@ export default function VisitPage() {
                     <div>
                       <p className="text-[15px] font-semibold text-gray-800">010-8802-8361</p>
                       <p className="text-[12px] mt-0.5 text-gray-400">오준혁 대표</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-gray-200">
+                      <Mail size={16} className="text-brand/60" />
+                    </div>
+                    <div>
+                      <a href="mailto:ccbtegu55@gmail.com" className="text-[15px] font-semibold text-gray-800 hover:text-brand transition-colors">
+                        ccbtegu55@gmail.com
+                      </a>
+                      <p className="text-[12px] mt-0.5 text-gray-400">Email</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-gray-200">
+                      <MessageCircle size={16} className="text-brand/60" />
+                    </div>
+                    <div>
+                      <a href="https://wa.me/821088028361" target="_blank" rel="noopener noreferrer" className="text-[15px] font-semibold text-gray-800 hover:text-brand transition-colors">
+                        +82 10 8802 8361
+                      </a>
+                      <p className="text-[12px] mt-0.5 text-gray-400">WhatsApp</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3.5">
