@@ -2,7 +2,6 @@ import { supabase } from '@/lib/supabase';
 import type { BannerSlide } from '@/lib/types';
 import HeroBanner from '@/components/HeroBanner';
 import WelcomeSection from '@/components/WelcomeSection';
-import GateSection from '@/components/GateSection';
 
 export const revalidate = 60;
 
@@ -19,10 +18,6 @@ export default async function MainPage() {
 
       {/* Welcome 섹션 */}
       <WelcomeSection />
-
-      {/* 테구아일랜드가 하는 일 (2단2열) */}
-      <div className="section-divider" />
-      <GateSection />
     </>
   );
 }
