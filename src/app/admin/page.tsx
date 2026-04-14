@@ -21,7 +21,7 @@ const TABLES = [
   { key: 'adoptions', label: '분양 개체', labelEn: 'Adoptions', desc: '홈·분양 게시판·상세 페이지', page: '/main, /main/adoption' },
   { key: 'edu_applications', label: '교육 신청', labelEn: 'Education', desc: '교육 신청 접수 내역 (읽기)', page: '/education' },
   { key: 'visit_reservations', label: '방문예약', labelEn: 'Visits', desc: '농장 방문예약 접수 내역', page: '/visit' },
-  { key: 'gallery_photos', label: '갤러리', labelEn: 'Gallery', desc: '메인 분양섹션 슬라이드 사진', page: '/main' },
+  { key: 'gallery_photos', label: '갤러리', labelEn: 'Gallery', desc: '메인 페이지 갤러리 마퀴 사진', page: '/main' },
 ];
 
 const TABLE_FIELDS: Record<string, { key: string; label: string; type?: string; placeholder?: string }[]> = {
