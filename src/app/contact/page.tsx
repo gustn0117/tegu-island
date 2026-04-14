@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 import CustomSelect, { type SelectOption } from '@/components/CustomSelect';
-import { CheckCircle, MessageCircle } from 'lucide-react';
+import { CheckCircle, MessageCircle, Phone, Mail, MapPin } from 'lucide-react';
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', species: '', experience: '', environment: '', message: '' });
@@ -112,6 +112,56 @@ export default function ContactPage() {
               </button>
             </form>
           )}
+
+          {/* 연락처 */}
+          <section className="mt-14 p-6 md:p-8 rounded-2xl bg-gray-50 border border-gray-100">
+            <p className="text-[12px] font-bold text-brand/40 tracking-widest mb-5" style={{ fontFamily: 'var(--font-accent)' }}>CONTACT</p>
+            <h3 className="text-xl font-display font-bold text-gray-900 mb-6">연락처</h3>
+            <div className="space-y-5">
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-gray-200">
+                  <Phone size={16} className="text-brand/60" />
+                </div>
+                <div>
+                  <p className="text-[15px] font-semibold text-gray-800">010-8802-8361</p>
+                  <p className="text-[12px] mt-0.5 text-gray-400">오준혁 대표</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-gray-200">
+                  <Mail size={16} className="text-brand/60" />
+                </div>
+                <div>
+                  <a href="mailto:ccbtegu55@gmail.com" className="text-[15px] font-semibold text-gray-800 hover:text-brand transition-colors">
+                    ccbtegu55@gmail.com
+                  </a>
+                  <p className="text-[12px] mt-0.5 text-gray-400">Email</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-gray-200">
+                  <MessageCircle size={16} className="text-brand/60" />
+                </div>
+                <div>
+                  <a href="https://wa.me/821088028361" target="_blank" rel="noopener noreferrer" className="text-[15px] font-semibold text-gray-800 hover:text-brand transition-colors">
+                    +82 10 8802 8361
+                  </a>
+                  <p className="text-[12px] mt-0.5 text-gray-400">WhatsApp</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-gray-200">
+                  <MapPin size={16} className="text-brand/60" />
+                </div>
+                <div>
+                  <p className="text-[15px] text-gray-700 leading-relaxed">
+                    서울특별시 금천구 가산디지털1로 100
+                  </p>
+                  <p className="text-[14px] text-gray-500">에이스골드타워 211호</p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
       <Footer />
