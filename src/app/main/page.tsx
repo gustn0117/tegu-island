@@ -24,12 +24,8 @@ export default async function MainPage() {
       <WelcomeSection />
 
       {/* 분양 중인 개체 */}
-      {allAdoptions.length > 0 && (
-        <>
-          <div className="section-divider" />
-          <AdoptionSection adoptions={allAdoptions.slice(0, 6)} />
-        </>
-      )}
+      <div className="section-divider" />
+      <AdoptionSection adoptions={allAdoptions.slice(0, 6)} />
 
       {/* 갤러리 마퀴 */}
       <div className="section-divider" />
